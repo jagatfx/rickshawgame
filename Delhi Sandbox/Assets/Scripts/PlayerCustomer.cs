@@ -10,9 +10,11 @@ public class PlayerCustomer : MonoBehaviour {
 
     private GameObject[] SpawnPoints;
 
-
     public float maxCustPickupSpeed = .25f;
     public Material spawnPointDefault, spawnPointTarget;
+    public Transform customerRoot;
+
+    private Customer cust;
 
     void Awake()
     {
@@ -22,13 +24,15 @@ public class PlayerCustomer : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Entering " + other.name);
+        //Debug.Log("Entering " + other.name);
 
         // If entering the range of a customer and one isn't already being targeted, target the customer.
         if (other.tag == "Customer" && targetCustomer == null)
         {
             Debug.Log("Customer spotted.");
-            targetCustomer = other.gameObject;
+            targetCustomer = other.transform.parent.gameObject;
+            cust = targetCustomer.GetComponentInParent<Customer>();
+            cust.Target();
         }
             
         else if (other.gameObject == customerDestination)
@@ -36,20 +40,20 @@ public class PlayerCustomer : MonoBehaviour {
             Debug.Log("Close to destination.");
             arrived = true;
         }
-            
-
     }
 
     void OnTriggerExit(Collider other)
     {
 
-        Debug.Log("Exiting " + other.name);
+        //Debug.Log("Exiting " + other.name);
 
         // If exiting the range of a targeted customer, stop targeting the.
-        if (other.tag == "Customer" && other == targetCustomer)
+        if (other.tag == "Customer" && other.transform.parent.gameObject == targetCustomer)
         {
             Debug.Log("Leaving potential customer.");
+            cust.Pass();
             targetCustomer = null;
+            cust = null;
         }
 
 
@@ -63,11 +67,10 @@ public class PlayerCustomer : MonoBehaviour {
 
     void Update()
     {
-        // If not carying a customer and one has been targeted and the car is moving slow enough, pick up the customer.
+        // If not carying a customer and one has been targeted and the care is moving slow enough, pick up the customer.
         if (!carryingCustomer && targetCustomer != null && rb.velocity.magnitude <= maxCustPickupSpeed)
         {
             Debug.Log("Picking up customer.");
-            Customer cust = targetCustomer.GetComponent<Customer>();
             cust.Pickup();
             carryingCustomer = true;
 
@@ -78,17 +81,16 @@ public class PlayerCustomer : MonoBehaviour {
 
         }
 
-        // You have arrived at the csutomer's destination.
+        // You have arrived at the customer's destination.
         else if (arrived && rb.velocity.magnitude <= maxCustPickupSpeed)
         {
             Debug.Log("Dropping Off Customer");
             customerDestination.GetComponent<Renderer>().material = spawnPointDefault;
             customerDestination = null;
-            Destroy(targetCustomer);
+            cust.DropOff();
             targetCustomer = null;
             arrived = false;
             carryingCustomer = false;
-
 
         }
 
