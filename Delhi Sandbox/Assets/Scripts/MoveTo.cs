@@ -4,16 +4,16 @@ using System.Collections;
 public class MoveTo : MonoBehaviour
 {
 
-	// Use this for initialization
-	void Start ()
-	{
-	
+	public Transform goal;
+
+	void Start () {
+		NavMeshAgent agent = GetComponent<NavMeshAgent>();
+		agent.destination = goal.position; 
 	}
-	
-	// Update is called once per frame
+
 	void Update ()
 	{
 	
 	}
 }
-
+	
