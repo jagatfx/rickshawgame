@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour
     public float m_StartDelay = 3f;         
     public float m_EndDelay = 3f;           
     public CameraControl m_CameraControl;   
-    public Text m_MessageText;              
+    public Text m_MessageText;
+	public Text m_ScoreText;
     public GameObject m_PlayerPrefab;         
 	public PlayerManager[] m_Players;           
 
@@ -38,6 +39,8 @@ public class GameManager : MonoBehaviour
 				Instantiate(m_PlayerPrefab, m_Players[i].m_SpawnPoint.position, m_Players[i].m_SpawnPoint.rotation) as GameObject;
 			m_Players[i].m_PlayerNumber = i + 1;
 			m_Players[i].Setup();
+			PlayerCustomer pc = m_Players[0].m_Instance.GetComponent<PlayerCustomer>();
+			m_Players [i].m_PlayerCustomer = pc;
         }
     }
 
@@ -75,9 +78,17 @@ public class GameManager : MonoBehaviour
 
 		m_RoundNumber++;
 		m_MessageText.text = "MISSION " + m_RoundNumber;
+		updateScore ();
 
         yield return m_StartWait;
     }
+
+
+	private void updateScore()
+	{
+		// TODO: do not hard-code for player1
+		m_ScoreText.text = "Player 1 $"+m_Players[0].CurrentMoney;		
+	}
 
 
 	private IEnumerator MissionPlaying()
@@ -85,6 +96,7 @@ public class GameManager : MonoBehaviour
 		EnablePlayerControl ();
 		m_MessageText.text = string.Empty;
 		while (!MissionEndingCondition ()) {
+			updateScore ();
 			yield return null;	
 		}
     }

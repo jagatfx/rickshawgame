@@ -8,11 +8,13 @@ public class PlayerManager
 
 	[HideInInspector] public int m_PlayerNumber;
 	[HideInInspector] public GameObject m_Instance;
+	[HideInInspector] public PlayerCustomer m_PlayerCustomer;
+
+	public float CurrentMoney { get { return m_PlayerCustomer.CurrentMoney; }}
 
 
 	public void Setup()
 	{
-		// TODO
 	}
 
 

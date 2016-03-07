@@ -59,12 +59,12 @@ public class Customer : MonoBehaviour {
     /// <summary>
     /// Changes to customer when being picked up by player.
     /// </summary>
-    public void Pickup()
+    public void Pickup(GameObject passengers)
     {
         // When picking up, set the parent to the player's passenger area,
         // disable their range sphere.
         Debug.Log("Customer: Take me to " + destination.transform.name + " please.");
-        transform.parent = GameObject.Find("Passengers").transform;
+		transform.parent = passengers.transform;
         transform.localPosition = new Vector3(0, 0, 0);
         range.SetActive(false);
         custRend.material = happyCustMat;
@@ -74,7 +74,7 @@ public class Customer : MonoBehaviour {
     /// <summary>
     /// Changes to customer when their destination has been reached.
     /// </summary>
-    public void DropOff()
+    public float DropOff()
     {
         // When dropping off customer, transfer from passenger area to the
         // customer root in the hierarchy, and then disable them.
@@ -83,6 +83,8 @@ public class Customer : MonoBehaviour {
         SpawnManager.RemoveCustomer();
         //gameObject.SetActive(false);
         Destroy(gameObject);
+		float payment = Random.Range(1, 100);;
+		return payment;
     }
     #endregion
 

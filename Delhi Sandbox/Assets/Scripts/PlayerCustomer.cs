@@ -20,10 +20,14 @@ public class PlayerCustomer : MonoBehaviour {
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
 
-
+	public GameObject m_Passengers;
+	public float InitialMoney = 100.0f;
+	public float CurrentMoney { get { return m_MoneyEarnings; }}
 
     // The max speed you must be traveling in order to pick up or drop off a customer.
     public float maxCustPickupSpeed = 0.25f;
+
+	private float m_MoneyEarnings;
 
     #region MonoBehavior Events
 
@@ -31,6 +35,7 @@ public class PlayerCustomer : MonoBehaviour {
     {
         // Initialize References
         rb = GetComponent<Rigidbody>();
+		m_MoneyEarnings = InitialMoney;
     }
 
     void OnTriggerStay(Collider other)
@@ -100,7 +105,7 @@ public class PlayerCustomer : MonoBehaviour {
     void PickupCustomer()
     {
         Debug.Log("Player: Picking up customer.");
-        cust.Pickup();
+		cust.Pickup(m_Passengers);
         carryingCustomer = true;
 
         customerDestination = cust.destination;
@@ -126,7 +131,7 @@ public class PlayerCustomer : MonoBehaviour {
     {
         Debug.Log("Player: Dropping Off Customer");
         customerDestination = null;
-        cust.DropOff();
+		m_MoneyEarnings += cust.DropOff();
         targetCustomer = null;
         arrived = false;
         carryingCustomer = false;
