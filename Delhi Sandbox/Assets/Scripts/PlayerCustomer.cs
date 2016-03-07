@@ -23,7 +23,7 @@ public class PlayerCustomer : MonoBehaviour {
 
 
     // The max speed you must be traveling in order to pick up or drop off a customer.
-    public float maxCustPickupSpeed = .25f;
+    public float maxCustPickupSpeed = 0.25f;
 
     #region MonoBehavior Events
 
@@ -36,7 +36,7 @@ public class PlayerCustomer : MonoBehaviour {
     void OnTriggerStay(Collider other)
     {
         // If dropping off a customer at their destination and there is a customer waiting there
-        // then don't rquire leaving and reentering the range of the new customer to be able to
+        // then don't require leaving and reentering the range of the new customer to be able to
         // pick them up. TODO: Consider not allowing destinations in range of awaiting customers.
         // Would allow the elimination of the check on stay.
         if (other.tag == "Customer" && targetCustomer == null)
@@ -70,7 +70,7 @@ public class PlayerCustomer : MonoBehaviour {
 
     void Update()
     {
-        // If not carying a customer and one has been targeted and the care is moving slow enough, pick up the customer.
+        // If not carrying a customer and one has been targeted and the care is moving slow enough, pick up the customer.
         if (!carryingCustomer && targetCustomer != null && rb.velocity.magnitude <= maxCustPickupSpeed)
             PickupCustomer();
 

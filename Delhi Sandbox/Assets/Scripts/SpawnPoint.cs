@@ -45,7 +45,7 @@ public class SpawnPoint : MonoBehaviour {
     }
 
     /// <summary>
-    /// Player has dropped off customer and it can be made invisiable again.
+    /// Player has dropped off customer and it can be made invisible again.
     /// </summary>
     public void Deactivate()
     {

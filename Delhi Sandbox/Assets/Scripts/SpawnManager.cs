@@ -113,7 +113,7 @@ public class SpawnManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Initaites a pickup at a given point.
+    /// Initiates a pickup at a given point.
     /// </summary>
     public static void RemoveCustomer()
     {
@@ -124,7 +124,7 @@ public class SpawnManager : MonoBehaviour {
     /// Pick a random destination that is not the spawn point. Makes 10 attempts
     /// before falling back on the origin as the destination.
     /// </summary>
-    /// <param name="spawnPointId">ID of where the pickup is occuring.</param>
+    /// <param name="spawnPointId">ID of where the pickup is occurring.</param>
     /// <returns></returns>
     GameObject GetDestination(int spawnPointId)
     {

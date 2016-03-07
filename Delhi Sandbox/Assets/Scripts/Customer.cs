@@ -76,8 +76,8 @@ public class Customer : MonoBehaviour {
     /// </summary>
     public void DropOff()
     {
-        // When droping off customer, transfer from passenger area to the
-        // customer root in the heirarchy, and then disable them.
+        // When dropping off customer, transfer from passenger area to the
+        // customer root in the hierarchy, and then disable them.
         Debug.Log("Customer: Thanks for the ride!");
         transform.parent = customerRoot;
         SpawnManager.RemoveCustomer();
