@@ -1,0 +1,48 @@
+SpawnManager
+- PubV) Max number of customers
+- PubV) Customer root - Game object containing all customers.
+- PriV) Current number of customers
+- PriM) Spawn Players
+
+Customer
+- PriV) SpawnPoint
+- PriV) Destination
+- PriV) Points?
+- PriV) Timer?
+- PriV) Current Happiness
+
+Player
+- PriV) Customer in Range
+- PriV) Carrying Customer
+- PriV) Score?
+- PriV) Damage?
+- PriV) LoadTime?
+- PriV) Customer
+--PriM) Find closest customer
+- PriM) Pickup customer
+- PriM) Dropoff customer
+- PriM) Eject customer
+
+
+SpawnManager - Update - Are there enough customers on the board?
+Y. Do nothing
+N. Spawn x players
+
+
+SpawnManager - Spawn Player
+1. Pick an empty spawn point from a list of availble spawn points.
+2. Pick a destination that isn't the spawn point.
+3a. Move disable customer to spawn point, or instantiate new customer at spawn point
+3b. If moving disable customer, enable them.
+3c. If moving disabled customer, enable pickup colider.
+3d. Init customer data (source and destination).
+4. Increment customer count
+5. Remove selected spawn from list of available spawn points.
+
+Customer - Init
+1. Set source
+2. Set destination
+3. Set timer?
+4. Set points?
+
+Player

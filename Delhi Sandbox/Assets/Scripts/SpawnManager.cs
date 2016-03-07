@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour {
 
-    public GameObject passengerPrefab;
-    public GameObject passengerParent;
+    public GameObject customerPrefab;
+    public GameObject customerParent;
+
+    public Material spawnPointDefaultMat, spawnPointTargetMat, spawnPointInRangeMat;
+    public bool hideSpawnPoints = true;
 
     /// <summary>
     /// Singleton meant to manage spawns.
@@ -16,104 +19,150 @@ public class SpawnManager : MonoBehaviour {
     /// Maybe convert to list in the future and allow user to add spawn points manually
     /// from around the scene which may be nested under other game objects.
     /// </summary>
-    private SpawnPoint[] spawnPoints;
+    private GameObject[] spawnPoints;
+    private List<int> openSpawnPoints = new List<int>();
 
-    /// <summary>
-    /// List of array indicies of spawnpoints which are not populated.
-    /// </summary>
-    private List<int> openPoints = new List<int>();
+    public int maxCustomers = 3;
+    private int availableCustomers = 0;
 
+    #region MonoBehavior Events
     void Awake()
     {
         // Init singleton
         if (instance == null)
-            instance = this;
-        else if (instance != this)
-            Destroy(gameObject);
-        DontDestroyOnLoad(gameObject);
-
-        // Get all spawn points in children of SpawnPointManager.
-        // For each of those points, find if they're populated,
-        // and assign an id to them so game can tell the manager
-        // where things are being picked up from.
-        spawnPoints = GetComponentsInChildren<SpawnPoint>();
-        for (int i=0; i < spawnPoints.Length; i++)
         {
-            spawnPoints[i].id = i;
-            if (!spawnPoints[i].populated)
-                openPoints.Add(i);
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this)
+        {
+            Debug.Log("Destroying extra spawnmanager instance.");
+            Destroy(gameObject);
+        }
+
+        // Find all spawnpoints on the map
+        spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+
+        // Keep track of which spawn points are empty.
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
+            SpawnPoint sp = spawnPoints[i].GetComponent<SpawnPoint>();
+            sp.populated = false;
+            sp.id = i;
+            openSpawnPoints.Add(i);
         }
 
     }
 
-    void Start()
+    void Update()
     {
         // Test, spawn passenger at first spawnp point.
-        Spawn(0);
+        for (int i = availableCustomers; i < maxCustomers; i++)
+        {
+            Spawn();
+        }
+
+    }
+    #endregion
+
+    #region SpawnManager Methods
+    public void Spawn()
+    {
+        int id = Random.Range(0, openSpawnPoints.Count);
+        Spawn(id);
     }
 
     /// <summary>
     /// Initiates spawn at a given point. If a negative value is provided, then
     /// a point will be selected at random.
     /// </summary>
-    public void Spawn(int id = -1)
+    public void Spawn(int id)
     {
-        int i = id;
 
-        if (openPoints.Count == 0)
+        if (id > openSpawnPoints.Count)
         {
-            Debug.Log("No Free Spawn Points");
+            Debug.Log("No more free spawn points.");
             return;
         }
 
-        if (id > openPoints.Count)
+        if (id > spawnPoints.Length)
         {
-            Debug.Log(id + " is beyond the max spawn point. Value must be <= " + openPoints.Count);
+            Debug.Log(id + " is beyond the max spawn point. Value must be <= " + spawnPoints.Length);
             return;
         }
-        else if (id >= 0)
+
+        if (!openSpawnPoints.Contains(id))
         {
-            if (!openPoints.Contains(id))
-            {
-                Debug.Log("Spawn Point " + id + " is already populated.");
-                return;
-            }
+            Debug.Log("Spawn Point " + id + " is already populated.");
+            return;
         }
-        else
-            i = openPoints[Random.Range(0, openPoints.Count)];
 
         // Flag the spawn point as popualted and remove it from the free list.
-        Debug.Log("Spawning at " + spawnPoints[i].transform.name);
-        spawnPoints[i].populated = true;
-        Vector3 newPassengerPos = spawnPoints[i].transform.position;
-        Quaternion newPassengerRot = spawnPoints[i].transform.rotation;
-        GameObject newPassenger = Instantiate(passengerPrefab, newPassengerPos, newPassengerRot) as GameObject;
-        newPassenger.transform.parent = passengerParent.transform;
-        openPoints.Remove(i);
+        Debug.Log("Spawning at " + spawnPoints[id].transform.name);
+        spawnPoints[id].GetComponent<SpawnPoint>().populated = true;
+        Vector3 newPassengerPos = spawnPoints[id].transform.position;
+        Quaternion newPassengerRot = spawnPoints[id].transform.rotation;
+
+        GameObject newPassenger = Instantiate(customerPrefab, newPassengerPos, newPassengerRot) as GameObject;
+        Customer cust = newPassenger.GetComponent<Customer>();
+
+        newPassenger.transform.parent = customerParent.transform;
+        cust.Init(spawnPoints[id], GetDestination(id));
+        openSpawnPoints.Remove(id);
+        availableCustomers++;
     }
 
     /// <summary>
     /// Initaites a pickup at a given point.
     /// </summary>
-    /// <param name="id"></param>
-    public void Remove(int id)
+    public static void RemoveCustomer()
     {
-        if (id > spawnPoints.Length)
-        {
-            Debug.Log(id + " is beyond the max spawn point. Value must be <= " + openPoints.Count);
-            return;
-        }
-
-        else if (!spawnPoints[id].populated)
-        {
-            Debug.Log("Spawn Point " + id + " is not populated.");
-            return;
-        }
-
-        // Flag the spawn point as free and add it to the free list.
-        Debug.Log("Picking up at " + spawnPoints[id].transform.name);
-        openPoints.Add(id);
-        spawnPoints[id].populated = false;
+        instance.availableCustomers--;
     }
 
+    /// <summary>
+    /// Pick a random destination that is not the spawn point. Makes 10 attempts
+    /// before falling back on the origin as the destination.
+    /// </summary>
+    /// <param name="spawnPointId">ID of where the pickup is occuring.</param>
+    /// <returns></returns>
+    GameObject GetDestination(int spawnPointId)
+    {
+        int i = spawnPointId;
+        for (int cntr = 0; cntr < 10; cntr++)
+        {
+            i = Random.Range(0, spawnPoints.Length);
+            if (i != spawnPointId)
+                break;
+        }
+        return spawnPoints[i];
+    }
+    #endregion
+
+    #region Static Methods
+    public static Material SpawnPointDefaultMat()
+    {
+        return instance.spawnPointDefaultMat;
+    }
+
+    public static Material SpawnPointTargetMat()
+    {
+        return instance.spawnPointTargetMat;
+    }
+
+    public static Material SpawnPointInRangeMat()
+    {
+        return instance.spawnPointInRangeMat;
+    }
+
+    public static bool HideSpawnPoints()
+    {
+        return instance.hideSpawnPoints;
+    }
+
+    public static void FreeSpawnPoint(int id)
+    {
+        instance.openSpawnPoints.Add(id);
+    }
+    #endregion
 }
