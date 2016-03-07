@@ -6,8 +6,11 @@ public class SpawnManager : MonoBehaviour {
     public GameObject customerPrefab;
     public GameObject customerParent;
 
-    public Material spawnPointDefaultMat, spawnPointTargetMat, spawnPointInRangeMat;
+	public Material spawnPointDefaultMat;
+	public Material spawnPointTargetMat;
+	public Material spawnPointInRangeMat;
     public bool hideSpawnPoints = true;
+	public int maxCustomers = 3;
 
     /// <summary>
     /// Singleton meant to manage spawns.
@@ -22,7 +25,6 @@ public class SpawnManager : MonoBehaviour {
     private GameObject[] spawnPoints;
     private List<int> openSpawnPoints = new List<int>();
 
-    public int maxCustomers = 3;
     private int availableCustomers = 0;
 
     #region MonoBehavior Events
