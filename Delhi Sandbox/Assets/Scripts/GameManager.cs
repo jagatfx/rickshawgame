@@ -5,24 +5,25 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public int m_NumRoundsToWin = 5;        
-    public float m_StartDelay = 3f;         
-    public float m_EndDelay = 3f;           
-    public CameraControl m_CameraControl;   
-    public Text m_MessageText;
-	public Text m_ScoreText;
-    public GameObject m_PlayerPrefab;         
-	public PlayerManager[] m_Players;           
+    public float startDelay = 3f;         
+    public float endDelay = 3f;           
+    public CameraControl cameraControl;   
+    public Text messageText;
+	public Text scoreText;
+	public Text fareText;
+	public Text moneyText;
+    public GameObject playerPrefab;         
+	public PlayerManager[] players;           
 
-    private int m_RoundNumber;              
-    private WaitForSeconds m_StartWait;     
-    private WaitForSeconds m_EndWait;
+    private int missionNumber;              
+    private WaitForSeconds startWait;     
+    private WaitForSeconds endWait;
 
 
     private void Start()
     {
-        m_StartWait = new WaitForSeconds(m_StartDelay);
-        m_EndWait = new WaitForSeconds(m_EndDelay);
+        startWait = new WaitForSeconds(startDelay);
+        endWait = new WaitForSeconds(endDelay);
 
         SpawnAllPlayers();
         SetCameraTargets();
@@ -33,28 +34,28 @@ public class GameManager : MonoBehaviour
 
     private void SpawnAllPlayers()
     {
-		for (int i = 0; i < m_Players.Length; i++)
+		for (int i = 0; i < players.Length; i++)
         {
-			m_Players[i].m_Instance =
-				Instantiate(m_PlayerPrefab, m_Players[i].m_SpawnPoint.position, m_Players[i].m_SpawnPoint.rotation) as GameObject;
-			m_Players[i].m_PlayerNumber = i + 1;
-			m_Players[i].Setup();
-			PlayerCustomer pc = m_Players[0].m_Instance.GetComponent<PlayerCustomer>();
-			m_Players [i].m_PlayerCustomer = pc;
+			players[i].m_Instance =
+				Instantiate(playerPrefab, players[i].spawnPoint.position, players[i].spawnPoint.rotation) as GameObject;
+			players[i].playerNumber = i + 1;
+			players[i].Setup();
+			PlayerCustomer pc = players[0].m_Instance.GetComponent<PlayerCustomer>();
+			players [i].playerCustomer = pc;
         }
     }
 
 
     private void SetCameraTargets()
     {
-		Transform[] targets = new Transform[m_Players.Length];
+		Transform[] targets = new Transform[players.Length];
 
         for (int i = 0; i < targets.Length; i++)
         {
-			targets[i] = m_Players[i].m_Instance.transform;
+			targets[i] = players[i].m_Instance.transform;
         }
 
-        m_CameraControl.m_Targets = targets;
+        cameraControl.targets = targets;
     }
 
 
@@ -74,27 +75,40 @@ public class GameManager : MonoBehaviour
 		ResetAll ();
 		DisablePlayerControl ();
 
-		m_CameraControl.SetStartPositionAndSize ();
+		cameraControl.SetStartPositionAndSize ();
 
-		m_RoundNumber++;
-		m_MessageText.text = "MISSION " + m_RoundNumber;
+		missionNumber++;
+		messageText.text = "MISSION " + missionNumber;
 		updateScore ();
 
-        yield return m_StartWait;
+        yield return startWait;
     }
 
 
 	private void updateScore()
 	{
 		// TODO: do not hard-code for player1
-		m_ScoreText.text = "Player 1 $"+m_Players[0].CurrentMoney;		
+		scoreText.text = "Player 1 $"+players[0].playerCustomer.CurrentMoney;
+		FarePlayerController fpc = players [0].playerCustomer.farePlayerController;
+		moneyText.text = "Money: $" + fpc.money;
+		if (null != fpc.fare) {
+			moneyText.text += " Charge: $" + fpc.charge;
+			fareText.text = "Fare type: " + fpc.fare.type;
+		} else
+		{
+			fareText.text = "";
+		}
+		if (null != fpc.fareResponse) 
+		{
+			fareText.text += " \"" + fpc.fareResponse.verbal + "\"";
+		}
 	}
 
 
 	private IEnumerator MissionPlaying()
     {
 		EnablePlayerControl ();
-		m_MessageText.text = string.Empty;
+		messageText.text = string.Empty;
 		while (!MissionEndingCondition ()) {
 			updateScore ();
 			yield return null;	
@@ -106,9 +120,9 @@ public class GameManager : MonoBehaviour
     {
 		DisablePlayerControl ();
 		string message = EndMessage ();
-		m_MessageText.text = message;
+		messageText.text = message;
 			
-        yield return m_EndWait;
+        yield return endWait;
     }
 
 
@@ -126,27 +140,27 @@ public class GameManager : MonoBehaviour
 
     private void ResetAll()
     {
-		for (int i = 0; i < m_Players.Length; i++)
+		for (int i = 0; i < players.Length; i++)
         {
-			m_Players[i].Reset();
+			players[i].Reset();
         }
     }
 
 
     private void EnablePlayerControl()
     {
-		for (int i = 0; i < m_Players.Length; i++)
+		for (int i = 0; i < players.Length; i++)
         {
-			m_Players[i].EnableControl();
+			players[i].EnableControl();
         }
     }
 
 
     private void DisablePlayerControl()
     {
-		for (int i = 0; i < m_Players.Length; i++)
+		for (int i = 0; i < players.Length; i++)
         {
-			m_Players[i].DisableControl();
+			players[i].DisableControl();
         }
     }
 

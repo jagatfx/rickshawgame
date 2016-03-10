@@ -3,9 +3,20 @@ using System.Collections;
 
 public class PlayerCustomer : MonoBehaviour {
 
+	public GameObject passengers;
+	public float initialMoney = 100.0f;
+	public float CurrentMoney { get { return moneyEarnings; }}
+	public GameObject farePlayerControllerObj;
+
+	[HideInInspector] public FarePlayerController farePlayerController;
+
+	// The max speed you must be traveling in order to pick up or drop off a customer.
+	public float maxCustPickupSpeed = 0.25f;
+
     // Indicates if you are currently carrying a customer and if
     // you are in range of their destination.
-    bool carryingCustomer = false, arrived = false;
+	bool carryingCustomer = false;
+	bool arrived = false;
 
     // Customer currently being targeted. This is currently the
     // first customer you come into pickup range of. TODO:
@@ -20,14 +31,7 @@ public class PlayerCustomer : MonoBehaviour {
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
 
-	public GameObject m_Passengers;
-	public float InitialMoney = 100.0f;
-	public float CurrentMoney { get { return m_MoneyEarnings; }}
-
-    // The max speed you must be traveling in order to pick up or drop off a customer.
-    public float maxCustPickupSpeed = 0.25f;
-
-	private float m_MoneyEarnings;
+	private float moneyEarnings;
 
     #region MonoBehavior Events
 
@@ -35,7 +39,8 @@ public class PlayerCustomer : MonoBehaviour {
     {
         // Initialize References
         rb = GetComponent<Rigidbody>();
-		m_MoneyEarnings = InitialMoney;
+		farePlayerController = farePlayerControllerObj.GetComponent<FarePlayerController> ();
+		moneyEarnings = initialMoney;
     }
 
     void OnTriggerStay(Collider other)
@@ -105,7 +110,8 @@ public class PlayerCustomer : MonoBehaviour {
     void PickupCustomer()
     {
         Debug.Log("Player: Picking up customer.");
-		cust.Pickup(m_Passengers);
+		farePlayerController.PickUp (cust);
+		cust.Pickup(passengers);
         carryingCustomer = true;
 
         customerDestination = cust.destination;
@@ -130,8 +136,9 @@ public class PlayerCustomer : MonoBehaviour {
     void DropOffCustomer()
     {
         Debug.Log("Player: Dropping Off Customer");
+		farePlayerController.DropOff ();
         customerDestination = null;
-		m_MoneyEarnings += cust.DropOff();
+		moneyEarnings += cust.DropOff();
         targetCustomer = null;
         arrived = false;
         carryingCustomer = false;

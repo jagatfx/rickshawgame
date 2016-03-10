@@ -4,6 +4,7 @@ using System.Collections;
 public class Customer : MonoBehaviour {
 
     public Material happyCustMat, inRangeMat;
+	public Fare fare;
 
     Transform customerRoot;
     MeshRenderer custRend;
@@ -21,6 +22,7 @@ public class Customer : MonoBehaviour {
         range = transform.GetChild(0).gameObject;
         rangeRend = range.GetComponent<Renderer>();
         outRange = rangeRend.material;
+		fare = new RichFare ();
 	}
     #endregion
 
@@ -36,6 +38,7 @@ public class Customer : MonoBehaviour {
     {
         spawnPoint = custSpawnPoint;
         destination = custDestination;
+		fare.destination = destination;
     }
 
     /// <summary>

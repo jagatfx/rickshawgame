@@ -4,14 +4,11 @@ using UnityEngine;
 [Serializable]
 public class PlayerManager
 {
-	public Transform m_SpawnPoint;
+	public Transform spawnPoint;
 
-	[HideInInspector] public int m_PlayerNumber;
+	[HideInInspector] public int playerNumber;
 	[HideInInspector] public GameObject m_Instance;
-	[HideInInspector] public PlayerCustomer m_PlayerCustomer;
-
-	public float CurrentMoney { get { return m_PlayerCustomer.CurrentMoney; }}
-
+	[HideInInspector] public PlayerCustomer playerCustomer;
 
 	public void Setup()
 	{
@@ -32,8 +29,8 @@ public class PlayerManager
 
 	public void Reset()
 	{
-		m_Instance.transform.position = m_SpawnPoint.position;
-		m_Instance.transform.rotation = m_SpawnPoint.rotation;
+		m_Instance.transform.position = spawnPoint.position;
+		m_Instance.transform.rotation = spawnPoint.rotation;
 
 		m_Instance.SetActive(false);
 		m_Instance.SetActive(true);
