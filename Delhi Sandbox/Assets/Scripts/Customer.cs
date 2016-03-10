@@ -22,7 +22,12 @@ public class Customer : MonoBehaviour {
         range = transform.GetChild(0).gameObject;
         rangeRend = range.GetComponent<Renderer>();
         outRange = rangeRend.material;
-		fare = new RichFare ();
+		if (Random.Range (0.0f, 1.0f) > 0.5f) {
+			fare = new RichFare ();
+		} else
+		{
+			fare = new PoorFare ();
+		}
 	}
     #endregion
 
