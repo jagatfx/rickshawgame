@@ -17,13 +17,16 @@ public class PlayerCustomer : MonoBehaviour {
     // Referece to the destination of your current customer.
     GameObject customerDestination = null;
 
+    // Where the compass will point to.
+    GameObject compassTarget;
+
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
 
-
-
     // The max speed you must be traveling in order to pick up or drop off a customer.
     public float maxCustPickupSpeed = .25f;
+
+    Compass compass;
 
     #region MonoBehavior Events
 
@@ -31,6 +34,7 @@ public class PlayerCustomer : MonoBehaviour {
     {
         // Initialize References
         rb = GetComponent<Rigidbody>();
+        compass = GetComponent<Compass>();
     }
 
     void OnTriggerStay(Collider other)
@@ -39,7 +43,7 @@ public class PlayerCustomer : MonoBehaviour {
         // then don't rquire leaving and reentering the range of the new customer to be able to
         // pick them up. TODO: Consider not allowing destinations in range of awaiting customers.
         // Would allow the elimination of the check on stay.
-        if (other.tag == "Customer" && targetCustomer == null)
+        if (other.tag == "CustomerRange" && targetCustomer == null)
             TargetCustomer(other.transform.parent.gameObject);
     }
 
@@ -61,7 +65,7 @@ public class PlayerCustomer : MonoBehaviour {
     {
 
         // If exiting the range of a targeted customer, stop targeting the.
-        if (other.tag == "Customer" && other.transform.parent.gameObject == targetCustomer)
+        if (other.tag == "CustomerRange" && other.transform.parent.gameObject == targetCustomer)
             PassCustomer();
         else if (other.gameObject == customerDestination)
             MissedDestination();
@@ -70,14 +74,25 @@ public class PlayerCustomer : MonoBehaviour {
 
     void Update()
     {
+        // Pick the compass target. If not targeting customer, find the closest one.
+        // If targeting customer, point at it. If carrying a customer, point to the destination.
+        if (!carryingCustomer && targetCustomer == null)
+            compassTarget = ClosestCustomer();
+        else if (!carryingCustomer && targetCustomer != null)
+            compassTarget = targetCustomer;
+        else if (carryingCustomer)
+            compassTarget = customerDestination;
+        compass.SetTarget(compassTarget);
+
         // If not carying a customer and one has been targeted and the care is moving slow enough, pick up the customer.
         if (!carryingCustomer && targetCustomer != null && rb.velocity.magnitude <= maxCustPickupSpeed)
-            PickupCustomer();
+        PickupCustomer();
 
         // You have arrived at the customer's destination.
         else if (arrived && rb.velocity.magnitude <= maxCustPickupSpeed)
             DropOffCustomer();
     }
+
     #endregion
 
     #region Player/Customer/Destination Interactions
@@ -136,6 +151,27 @@ public class PlayerCustomer : MonoBehaviour {
     void EjectCustomer()
     {
 
+    }
+
+    GameObject ClosestCustomer()
+    {
+        GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
+
+        int closest = 0;
+        float closestDist = Mathf.Infinity;
+
+        for ( int i = 0; i < customers.Length; i++)
+        {
+            float dist = Vector3.Distance(customers[i].transform.position, transform.position);
+            if (dist  < closestDist)
+            {
+                closest = i;
+                closestDist = dist;
+            }
+                
+        }
+
+        return customers[closest];
     }
 
     #endregion
