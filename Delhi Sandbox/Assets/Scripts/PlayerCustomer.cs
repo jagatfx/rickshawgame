@@ -13,6 +13,8 @@ public class PlayerCustomer : MonoBehaviour {
 	// The max speed you must be traveling in order to pick up or drop off a customer.
 	public float maxCustPickupSpeed = 0.25f;
 
+	Compass compass;
+
     // Indicates if you are currently carrying a customer and if
     // you are in range of their destination.
 	bool carryingCustomer = false;
@@ -28,6 +30,9 @@ public class PlayerCustomer : MonoBehaviour {
     // Referece to the destination of your current customer.
     GameObject customerDestination = null;
 
+	// Where the compass will point to.
+	GameObject compassTarget;
+
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
 
@@ -41,6 +46,7 @@ public class PlayerCustomer : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
 		farePlayerController = farePlayerControllerObj.GetComponent<FarePlayerController> ();
 		moneyEarnings = initialMoney;
+		compass = GetComponent<Compass>();
     }
 
     void OnTriggerStay(Collider other)
@@ -80,6 +86,16 @@ public class PlayerCustomer : MonoBehaviour {
 
     void Update()
     {
+		// Pick the compass target. If not targeting customer, find the closest one.
+		// If targeting customer, point at it. If carrying a customer, point to the destination.
+		if (!carryingCustomer && targetCustomer == null)
+			compassTarget = ClosestCustomer();
+		else if (!carryingCustomer && targetCustomer != null)
+			compassTarget = targetCustomer;
+		else if (carryingCustomer)
+			compassTarget = customerDestination;
+		compass.SetTarget(compassTarget);
+
         // If not carrying a customer and one has been targeted and the care is moving slow enough, pick up the customer.
         if (!carryingCustomer && targetCustomer != null && rb.velocity.magnitude <= maxCustPickupSpeed)
             PickupCustomer();
@@ -88,6 +104,7 @@ public class PlayerCustomer : MonoBehaviour {
         else if (arrived && rb.velocity.magnitude <= maxCustPickupSpeed)
             DropOffCustomer();
     }
+
     #endregion
 
     #region Player/Customer/Destination Interactions
@@ -149,6 +166,27 @@ public class PlayerCustomer : MonoBehaviour {
     {
 
     }
+
+	GameObject ClosestCustomer()
+	{
+		GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
+
+		if (null != customers)
+		{
+			int closest = 0;
+			float closestDist = Mathf.Infinity;
+
+			for (int i = 0; i < customers.Length; i++) {
+				float dist = Vector3.Distance (customers [i].transform.position, transform.position);
+				if (dist < closestDist) {
+					closest = i;
+					closestDist = dist;
+				}
+			}
+			return customers[closest];
+		}
+		return null;
+	}
 
     #endregion
 
