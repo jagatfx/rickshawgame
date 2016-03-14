@@ -11,9 +11,11 @@ public class Customer : MonoBehaviour {
     GameObject range;
     Renderer rangeRend;
     Material outRange;
+    AudioSource audSrc;
 
     public GameObject spawnPoint;
     public GameObject destination;
+    public int avatarId;
 
     #region MonoBehavior Events
     void Awake() {
@@ -28,7 +30,9 @@ public class Customer : MonoBehaviour {
 		{
 			fare = new PoorFare ();
 		}
-	}
+        audSrc = GetComponent<AudioSource>();
+        avatarId = CustomerAvatars.RandomId();
+    }
     #endregion
 
     # region Customer Methods
@@ -53,6 +57,7 @@ public class Customer : MonoBehaviour {
     {
         Debug.Log("Customer: *Whistle* Taxi!");
         rangeRend.material = inRangeMat;
+        CustomerAvatars.Play(avatarId, CustAudioTypes.Hail);
     }
 
     /// <summary>
@@ -62,6 +67,7 @@ public class Customer : MonoBehaviour {
     {
         Debug.Log("Customer: Hey! Come back!");
         rangeRend.material = outRange;
+        CustomerAvatars.Play(avatarId, CustAudioTypes.Miss);
     }
 
     /// <summary>
@@ -89,9 +95,11 @@ public class Customer : MonoBehaviour {
         Debug.Log("Customer: Thanks for the ride!");
         transform.parent = customerRoot;
         SpawnManager.RemoveCustomer();
+        CustomerAvatars.Play(avatarId, CustAudioTypes.HappyDropoff);
         //gameObject.SetActive(false);
         Destroy(gameObject);
-		float payment = Random.Range(1, 100);;
+
+		float payment = Random.Range(1, 100);
 		return payment;
     }
     #endregion
