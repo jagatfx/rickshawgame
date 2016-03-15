@@ -12,18 +12,23 @@ public class GameManager : MonoBehaviour
 	public Text scoreText;
 	public Text fareText;
 	public Text moneyText;
-    public GameObject playerPrefab;         
+	public Text timerText;
+    public GameObject playerPrefab;
+	public GameObject missionTimeObj;
 	public PlayerManager[] players;           
 
     private int missionNumber;              
     private WaitForSeconds startWait;     
     private WaitForSeconds endWait;
+	private MissionTimer missionTimer;
 
 
     private void Start()
     {
         startWait = new WaitForSeconds(startDelay);
         endWait = new WaitForSeconds(endDelay);
+
+		missionTimer = missionTimeObj.GetComponent<MissionTimer>();
 
         SpawnAllPlayers();
         SetCameraTargets();
@@ -79,6 +84,7 @@ public class GameManager : MonoBehaviour
 
 		missionNumber++;
 		messageText.text = "MISSION " + missionNumber;
+		missionTimer.StartCountdown ();
 		updateScore ();
 
         yield return startWait;
@@ -87,8 +93,9 @@ public class GameManager : MonoBehaviour
 
 	private void updateScore()
 	{
-		// TODO: do not hard-code for player1
-		scoreText.text = "Player 1 $"+players[0].playerCustomer.CurrentMoney;
+		// TODO: do not hard-code for player1, pretty up score/money display
+		timerText.text = "Time Remaining: "+FareTools.roundTwoDecimals(missionTimer.TimeRemaining ());
+		scoreText.text = "Player 1";// $"+players[0].playerCustomer.CurrentMoney;
 		FarePlayerController fpc = players [0].playerCustomer.farePlayerController;
 		moneyText.text = "Money: $" + fpc.money;
 		if (null != fpc.fare) {
@@ -128,18 +135,19 @@ public class GameManager : MonoBehaviour
 
 	private bool MissionEndingCondition()
     {
-        return false;
+		return missionTimer.IsTimeElapsed ();
     }
 
     private string EndMessage()
     {
-        string message = "GAME OVER!";
+        string message = "MISSION OVER!";
         return message;
     }
 
 
     private void ResetAll()
     {
+		missionTimer.ResetTimer ();
 		for (int i = 0; i < players.Length; i++)
         {
 			players[i].Reset();
