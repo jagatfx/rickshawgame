@@ -12,7 +12,7 @@ public class Customer : MonoBehaviour
     GameObject range;
     Renderer rangeRend;
     Material outRange;
-    AudioSource audSrc;
+//    AudioSource audSrc;
 
     public GameObject spawnPoint;
     public GameObject destination;
@@ -32,7 +32,7 @@ public class Customer : MonoBehaviour
         } else {
             fare = new PoorFare ();
         }
-        audSrc = GetComponent<AudioSource> ();
+//        audSrc = GetComponent<AudioSource> ();
         avatarId = CustomerAvatars.RandomId ();
     }
 
