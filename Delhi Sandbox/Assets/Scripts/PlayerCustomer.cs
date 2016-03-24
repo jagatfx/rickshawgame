@@ -3,22 +3,22 @@ using System.Collections;
 
 public class PlayerCustomer : MonoBehaviour {
 
-	public GameObject passengers;
-	public float initialMoney = 100.0f;
-	public float CurrentMoney { get { return moneyEarnings; }}
-	public GameObject farePlayerControllerObj;
+    public GameObject passengers;
+    public float initialMoney = 100.0f;
+    public float CurrentMoney { get { return moneyEarnings; }}
+    public GameObject farePlayerControllerObj;
 
-	[HideInInspector] public FarePlayerController farePlayerController;
+    [HideInInspector] public FarePlayerController farePlayerController;
 
-	// The max speed you must be traveling in order to pick up or drop off a customer.
-	public float maxCustPickupSpeed = 0.25f;
+    // The max speed you must be traveling in order to pick up or drop off a customer.
+    public float maxCustPickupSpeed = 0.25f;
 
-	Compass compass;
+    Compass compass;
 
     // Indicates if you are currently carrying a customer and if
     // you are in range of their destination.
-	bool carryingCustomer = false;
-	bool arrived = false;
+    bool carryingCustomer = false;
+    bool arrived = false;
 
     // Customer currently being targeted. This is currently the
     // first customer you come into pickup range of. TODO:
@@ -30,13 +30,13 @@ public class PlayerCustomer : MonoBehaviour {
     // Referece to the destination of your current customer.
     GameObject customerDestination = null;
 
-	// Where the compass will point to.
-	GameObject compassTarget;
+    // Where the compass will point to.
+    GameObject compassTarget;
 
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
 
-	private float moneyEarnings;
+    private float moneyEarnings;
 
     #region MonoBehavior Events
 
@@ -44,9 +44,9 @@ public class PlayerCustomer : MonoBehaviour {
     {
         // Initialize References
         rb = GetComponent<Rigidbody>();
-		farePlayerController = farePlayerControllerObj.GetComponent<FarePlayerController> ();
-		moneyEarnings = initialMoney;
-		compass = GetComponent<Compass>();
+        farePlayerController = farePlayerControllerObj.GetComponent<FarePlayerController> ();
+        moneyEarnings = initialMoney;
+        compass = GetComponent<Compass>();
     }
 
     void OnTriggerStay(Collider other)
@@ -81,20 +81,20 @@ public class PlayerCustomer : MonoBehaviour {
             PassCustomer();
         else if (other.gameObject == customerDestination)
             MissedDestination();
-            
+
     }
 
     void Update()
     {
-		// Pick the compass target. If not targeting customer, find the closest one.
-		// If targeting customer, point at it. If carrying a customer, point to the destination.
-		if (!carryingCustomer && targetCustomer == null)
-			compassTarget = ClosestCustomer();
-		else if (!carryingCustomer && targetCustomer != null)
-			compassTarget = targetCustomer;
-		else if (carryingCustomer)
-			compassTarget = customerDestination;
-		compass.SetTarget(compassTarget);
+        // Pick the compass target. If not targeting customer, find the closest one.
+        // If targeting customer, point at it. If carrying a customer, point to the destination.
+        if (!carryingCustomer && targetCustomer == null)
+            compassTarget = ClosestCustomer();
+        else if (!carryingCustomer && targetCustomer != null)
+            compassTarget = targetCustomer;
+        else if (carryingCustomer)
+            compassTarget = customerDestination;
+        compass.SetTarget(compassTarget);
 
         // If not carrying a customer and one has been targeted and the care is moving slow enough, pick up the customer.
         if (!carryingCustomer && targetCustomer != null && rb.velocity.magnitude <= maxCustPickupSpeed)
@@ -127,8 +127,8 @@ public class PlayerCustomer : MonoBehaviour {
     void PickupCustomer()
     {
         Debug.Log("Player: Picking up customer.");
-		farePlayerController.PickUp (cust);
-		cust.Pickup(passengers);
+        farePlayerController.PickUp (cust);
+        cust.Pickup(passengers);
         carryingCustomer = true;
 
         customerDestination = cust.destination;
@@ -153,9 +153,9 @@ public class PlayerCustomer : MonoBehaviour {
     void DropOffCustomer()
     {
         Debug.Log("Player: Dropping Off Customer");
-		farePlayerController.DropOff ();
+        farePlayerController.DropOff ();
         customerDestination = null;
-		moneyEarnings += cust.DropOff();
+        moneyEarnings += cust.DropOff();
         targetCustomer = null;
         arrived = false;
         carryingCustomer = false;
@@ -167,26 +167,26 @@ public class PlayerCustomer : MonoBehaviour {
 
     }
 
-	GameObject ClosestCustomer()
-	{
-		GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
+    GameObject ClosestCustomer()
+    {
+        GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
 
-		if (null != customers)
-		{
-			int closest = 0;
-			float closestDist = Mathf.Infinity;
+        if (null != customers)
+        {
+            int closest = 0;
+            float closestDist = Mathf.Infinity;
 
-			for (int i = 0; i < customers.Length; i++) {
-				float dist = Vector3.Distance (customers [i].transform.position, transform.position);
-				if (dist < closestDist) {
-					closest = i;
-					closestDist = dist;
-				}
-			}
-			return customers[closest];
-		}
-		return null;
-	}
+            for (int i = 0; i < customers.Length; i++) {
+                float dist = Vector3.Distance (customers [i].transform.position, transform.position);
+                if (dist < closestDist) {
+                    closest = i;
+                    closestDist = dist;
+                }
+            }
+            return customers[closest];
+        }
+        return null;
+    }
 
     #endregion
 

@@ -4,35 +4,35 @@ using UnityEngine;
 [Serializable]
 public class PlayerManager
 {
-	public Transform spawnPoint;
+    public Transform spawnPoint;
 
-	[HideInInspector] public int playerNumber;
-	[HideInInspector] public GameObject m_Instance;
-	[HideInInspector] public PlayerCustomer playerCustomer;
+    [HideInInspector] public int playerNumber;
+    [HideInInspector] public GameObject m_Instance;
+    [HideInInspector] public PlayerCustomer playerCustomer;
 
-	public void Setup()
-	{
-	}
-
-
-	public void DisableControl()
-	{
-		// TODO
-	}
+    public void Setup()
+    {
+    }
 
 
-	public void EnableControl()
-	{
-		// TODO
-	}
+    public void DisableControl()
+    {
+        // TODO
+    }
 
 
-	public void Reset()
-	{
-		m_Instance.transform.position = spawnPoint.position;
-		m_Instance.transform.rotation = spawnPoint.rotation;
+    public void EnableControl()
+    {
+        // TODO
+    }
 
-		m_Instance.SetActive(false);
-		m_Instance.SetActive(true);
-	}
+
+    public void Reset()
+    {
+        m_Instance.transform.position = spawnPoint.position;
+        m_Instance.transform.rotation = spawnPoint.rotation;
+
+        m_Instance.SetActive(false);
+        m_Instance.SetActive(true);
+    }
 }

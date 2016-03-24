@@ -4,72 +4,72 @@ using System.Collections;
 public class MissionTimer : MonoBehaviour
 {
 
-	public float missionTime = 30.0f;
+    public float missionTime = 30.0f;
 
-	private bool timeElapsed;
-	private bool isCountingDown;
-	private float timeRemaining;
+    private bool timeElapsed;
+    private bool isCountingDown;
+    private float timeRemaining;
 
-	void SetupTimer ()
-	{
-		timeElapsed = false;
-		isCountingDown = false;
-		timeRemaining = missionTime;
-		timeRemaining = missionTime;
-	}
+    void SetupTimer ()
+    {
+        timeElapsed = false;
+        isCountingDown = false;
+        timeRemaining = missionTime;
+        timeRemaining = missionTime;
+    }
 
-	// Use this for initialization
-	void Start ()
-	{
-		SetupTimer ();
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-		if (!timeElapsed && isCountingDown)
-		{
-			timeRemaining -= Time.deltaTime;
-			if (timeRemaining < 0.0f)
-			{
-				timeElapsed = true;
-			}
-		}
-	}
+    // Use this for initialization
+    void Start ()
+    {
+        SetupTimer ();
+    }
 
-	public float TimeRemaining ()
-	{
-		return timeRemaining;
-	}
+    // Update is called once per frame
+    void Update ()
+    {
+        if (!timeElapsed && isCountingDown)
+        {
+            timeRemaining -= Time.deltaTime;
+            if (timeRemaining < 0.0f)
+            {
+                timeElapsed = true;
+            }
+        }
+    }
 
-	public void ResetTimer ()
-	{
-		SetupTimer ();
-	}
+    public float TimeRemaining ()
+    {
+        return timeRemaining;
+    }
 
-	public void StartCountdown ()
-	{
-		isCountingDown = true;
-	}
+    public void ResetTimer ()
+    {
+        SetupTimer ();
+    }
 
-	public void PauseCountdown ()
-	{
-		isCountingDown = false;
-	}
+    public void StartCountdown ()
+    {
+        isCountingDown = true;
+    }
 
-	public void AddTime (float addTime)
-	{
-		timeRemaining += addTime;
-	}
+    public void PauseCountdown ()
+    {
+        isCountingDown = false;
+    }
 
-	public void SubtractTime (float subTime)
-	{
-		timeRemaining -= subTime;
-	}
+    public void AddTime (float addTime)
+    {
+        timeRemaining += addTime;
+    }
 
-	public bool IsTimeElapsed ()
-	{
-		return timeElapsed;
-	}
+    public void SubtractTime (float subTime)
+    {
+        timeRemaining -= subTime;
+    }
+
+    public bool IsTimeElapsed ()
+    {
+        return timeElapsed;
+    }
 }
 

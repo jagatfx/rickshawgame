@@ -24,7 +24,7 @@ public class SpawnPoint : MonoBehaviour {
     public void Activate()
     {
         rend.material = SpawnManager.SpawnPointTargetMat();
-        coll.enabled = true;        
+        coll.enabled = true;
         rend.enabled = true;
     }
 

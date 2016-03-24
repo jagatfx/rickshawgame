@@ -5,22 +5,22 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public float startDelay = 3f;         
-    public float endDelay = 3f;           
-    public CameraControl cameraControl;   
+    public float startDelay = 3f;
+    public float endDelay = 3f;
+    public CameraControl cameraControl;
     public Text messageText;
-	public Text scoreText;
-	public Text fareText;
-	public Text moneyText;
-	public Text timerText;
+    public Text scoreText;
+    public Text fareText;
+    public Text moneyText;
+    public Text timerText;
     public GameObject playerPrefab;
-	public GameObject missionTimeObj;
-	public PlayerManager[] players;           
+    public GameObject missionTimeObj;
+    public PlayerManager[] players;
 
-    private int missionNumber;              
-    private WaitForSeconds startWait;     
+    private int missionNumber;
+    private WaitForSeconds startWait;
     private WaitForSeconds endWait;
-	private MissionTimer missionTimer;
+    private MissionTimer missionTimer;
 
 
     private void Start()
@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
         startWait = new WaitForSeconds(startDelay);
         endWait = new WaitForSeconds(endDelay);
 
-		missionTimer = missionTimeObj.GetComponent<MissionTimer>();
+        missionTimer = missionTimeObj.GetComponent<MissionTimer>();
 
         SpawnAllPlayers();
         SetCameraTargets();
@@ -39,25 +39,25 @@ public class GameManager : MonoBehaviour
 
     private void SpawnAllPlayers()
     {
-		for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Length; i++)
         {
-			players[i].m_Instance =
-				Instantiate(playerPrefab, players[i].spawnPoint.position, players[i].spawnPoint.rotation) as GameObject;
-			players[i].playerNumber = i + 1;
-			players[i].Setup();
-			PlayerCustomer pc = players[0].m_Instance.GetComponent<PlayerCustomer>();
-			players [i].playerCustomer = pc;
+            players[i].m_Instance =
+                Instantiate(playerPrefab, players[i].spawnPoint.position, players[i].spawnPoint.rotation) as GameObject;
+            players[i].playerNumber = i + 1;
+            players[i].Setup();
+            PlayerCustomer pc = players[0].m_Instance.GetComponent<PlayerCustomer>();
+            players [i].playerCustomer = pc;
         }
     }
 
 
     private void SetCameraTargets()
     {
-		Transform[] targets = new Transform[players.Length];
+        Transform[] targets = new Transform[players.Length];
 
         for (int i = 0; i < targets.Length; i++)
         {
-			targets[i] = players[i].m_Instance.transform;
+            targets[i] = players[i].m_Instance.transform;
         }
 
         cameraControl.targets = targets;
@@ -75,67 +75,67 @@ public class GameManager : MonoBehaviour
     }
 
 
-	private IEnumerator MissionStarting()
+    private IEnumerator MissionStarting()
     {
-		ResetAll ();
-		DisablePlayerControl ();
+        ResetAll ();
+        DisablePlayerControl ();
 
-		cameraControl.SetStartPositionAndSize ();
+        cameraControl.SetStartPositionAndSize ();
 
-		missionNumber++;
-		messageText.text = "MISSION " + missionNumber;
-		missionTimer.StartCountdown ();
-		updateScore ();
+        missionNumber++;
+        messageText.text = "MISSION " + missionNumber;
+        missionTimer.StartCountdown ();
+        updateScore ();
 
         yield return startWait;
     }
 
 
-	private void updateScore()
-	{
-		// TODO: do not hard-code for player1, pretty up score/money display
-		timerText.text = "Time Remaining: "+FareTools.roundTwoDecimals(missionTimer.TimeRemaining ());
-		scoreText.text = "Player 1";// $"+players[0].playerCustomer.CurrentMoney;
-		FarePlayerController fpc = players [0].playerCustomer.farePlayerController;
-		moneyText.text = "Money: $" + fpc.money;
-		if (null != fpc.fare) {
-			moneyText.text += " Charge: $" + fpc.charge;
-			fareText.text = "Fare type: " + fpc.fare.type;
-		} else
-		{
-			fareText.text = "";
-		}
-		if (null != fpc.fareResponse) 
-		{
-			fareText.text += " \"" + fpc.fareResponse.verbal + "\"";
-		}
-	}
-
-
-	private IEnumerator MissionPlaying()
+    private void updateScore()
     {
-		EnablePlayerControl ();
-		messageText.text = string.Empty;
-		while (!MissionEndingCondition ()) {
-			updateScore ();
-			yield return null;	
-		}
+        // TODO: do not hard-code for player1, pretty up score/money display
+        timerText.text = "Time Remaining: "+FareTools.roundTwoDecimals(missionTimer.TimeRemaining ());
+        scoreText.text = "Player 1";// $"+players[0].playerCustomer.CurrentMoney;
+        FarePlayerController fpc = players [0].playerCustomer.farePlayerController;
+        moneyText.text = "Money: $" + fpc.money;
+        if (null != fpc.fare) {
+            moneyText.text += " Charge: $" + fpc.charge;
+            fareText.text = "Fare type: " + fpc.fare.type;
+        } else
+        {
+            fareText.text = "";
+        }
+        if (null != fpc.fareResponse)
+        {
+            fareText.text += " \"" + fpc.fareResponse.verbal + "\"";
+        }
     }
 
 
-	private IEnumerator MissionEnding()
+    private IEnumerator MissionPlaying()
     {
-		DisablePlayerControl ();
-		string message = EndMessage ();
-		messageText.text = message;
-			
+        EnablePlayerControl ();
+        messageText.text = string.Empty;
+        while (!MissionEndingCondition ()) {
+            updateScore ();
+            yield return null;
+        }
+    }
+
+
+    private IEnumerator MissionEnding()
+    {
+        DisablePlayerControl ();
+        string message = EndMessage ();
+        messageText.text = message;
+
         yield return endWait;
     }
 
 
-	private bool MissionEndingCondition()
+    private bool MissionEndingCondition()
     {
-		return missionTimer.IsTimeElapsed ();
+        return missionTimer.IsTimeElapsed ();
     }
 
     private string EndMessage()
@@ -147,28 +147,28 @@ public class GameManager : MonoBehaviour
 
     private void ResetAll()
     {
-		missionTimer.ResetTimer ();
-		for (int i = 0; i < players.Length; i++)
+        missionTimer.ResetTimer ();
+        for (int i = 0; i < players.Length; i++)
         {
-			players[i].Reset();
+            players[i].Reset();
         }
     }
 
 
     private void EnablePlayerControl()
     {
-		for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Length; i++)
         {
-			players[i].EnableControl();
+            players[i].EnableControl();
         }
     }
 
 
     private void DisablePlayerControl()
     {
-		for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Length; i++)
         {
-			players[i].DisableControl();
+            players[i].DisableControl();
         }
     }
 
