@@ -2,16 +2,16 @@
 
 public class FareResponse
 {
-	private float payment;
+    private float payment;
 
-	public float Payment {
-		get {
-			return payment;
-		}
-		set {
-			payment = FareTools.roundTwoDecimals (value);
-		}
-	}
+    public float Payment {
+        get {
+            return payment;
+        }
+        set {
+            payment = FareTools.roundTwoDecimals (value);
+        }
+    }
 
-	public string verbal;
+    public string verbal;
 }
