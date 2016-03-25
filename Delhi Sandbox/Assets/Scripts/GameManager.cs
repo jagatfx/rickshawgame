@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     public Text moneyText;
     public Text timerText;
     public GameObject playerPrefab;
-    public GameObject missionTimeObj;
     public PlayerManager[] players;
 
     private int missionNumber;
@@ -28,7 +27,7 @@ public class GameManager : MonoBehaviour
         startWait = new WaitForSeconds(startDelay);
         endWait = new WaitForSeconds(endDelay);
 
-        missionTimer = missionTimeObj.GetComponent<MissionTimer>();
+        missionTimer = GetComponent<MissionTimer>();
 
         SpawnAllPlayers();
         SetCameraTargets();
