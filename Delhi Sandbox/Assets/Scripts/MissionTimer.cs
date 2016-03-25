@@ -18,13 +18,11 @@ public class MissionTimer : MonoBehaviour
         timeRemaining = missionTime;
     }
 
-    // Use this for initialization
     void Start ()
     {
         SetupTimer ();
     }
 
-    // Update is called once per frame
     void Update ()
     {
         if (!timeElapsed && isCountingDown)
