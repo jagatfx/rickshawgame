@@ -9,10 +9,12 @@ public class Compass : MonoBehaviour {
 
     // Update is called once per frame
     void LateUpdate () {
-
-        Vector3 dir = (compassRoot.transform.position - tgt.transform.position).normalized;
-        Quaternion rot = Quaternion.LookRotation(dir);
-        compassRoot.transform.rotation = Quaternion.Slerp(compassRoot.transform.rotation, rot, Time.deltaTime * rotationSpeed);
+        if (tgt)
+        {
+            Vector3 dir = (compassRoot.transform.position - tgt.transform.position).normalized;
+            Quaternion rot = Quaternion.LookRotation(dir);
+            compassRoot.transform.rotation = Quaternion.Slerp(compassRoot.transform.rotation, rot, Time.deltaTime * rotationSpeed);
+        }
     }
 
     public void SetTarget(GameObject target)
