@@ -10,10 +10,10 @@ public class PoorFare : Fare
         type = "Poor";
     }
 
-    public override FareResponse GetResponse (float pathDistance, float journeyTime, float price)
+    public override FareResponse GetResponse (float directDistance, float journeyTime, float price)
     {
         FareResponse response = new FareResponse();
-        float speed = FareTools.getSpeedMph(pathDistance, journeyTime);
+        float speed = FareTools.getSpeedMph(directDistance, journeyTime);
         if (speed >= ReasonableSpeed) {
             response.Payment = price * 1.2f;
             response.verbal = "Thanks a bunch!";

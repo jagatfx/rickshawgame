@@ -92,7 +92,7 @@ public class Customer : MonoBehaviour
     /// <summary>
     /// Changes to customer when their destination has been reached.
     /// </summary>
-    public float DropOff ()
+    public void DropOff ()
     {
         // When dropping off customer, transfer from passenger area to the
         // customer root in the hierarchy, and then disable them.
@@ -102,9 +102,6 @@ public class Customer : MonoBehaviour
         CustomerAvatars.Play (avatarId, CustAudioTypes.HappyDropoff);
         //gameObject.SetActive(false);
         Destroy (gameObject);
-
-        float payment = Random.Range (1, 100);
-        return payment;
     }
 
     #endregion

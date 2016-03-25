@@ -4,8 +4,6 @@ using System.Collections;
 public class PlayerCustomer : MonoBehaviour {
 
     public GameObject passengers;
-    public float initialMoney = 100.0f;
-    public float CurrentMoney { get { return moneyEarnings; }}
     public GameObject farePlayerControllerObj;
 
     [HideInInspector] public FarePlayerController farePlayerController;
@@ -36,8 +34,6 @@ public class PlayerCustomer : MonoBehaviour {
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
 
-    private float moneyEarnings;
-
     #region MonoBehavior Events
 
     void Awake()
@@ -45,7 +41,6 @@ public class PlayerCustomer : MonoBehaviour {
         // Initialize References
         rb = GetComponent<Rigidbody>();
         farePlayerController = farePlayerControllerObj.GetComponent<FarePlayerController> ();
-        moneyEarnings = initialMoney;
         compass = GetComponent<Compass>();
     }
 
@@ -155,7 +150,7 @@ public class PlayerCustomer : MonoBehaviour {
         Debug.Log("Player: Dropping Off Customer");
         farePlayerController.DropOff ();
         customerDestination = null;
-        moneyEarnings += cust.DropOff();
+        cust.DropOff();
         targetCustomer = null;
         arrived = false;
         carryingCustomer = false;

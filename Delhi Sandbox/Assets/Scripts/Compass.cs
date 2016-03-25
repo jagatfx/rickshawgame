@@ -3,16 +3,16 @@ using System.Collections;
 
 public class Compass : MonoBehaviour {
 
-    public GameObject compass_root;
+    public GameObject compassRoot;
     private GameObject tgt;
-    public float rotationSpeed = .1f;
+    public float rotationSpeed = 0.1f;
 
     // Update is called once per frame
     void LateUpdate () {
 
-        Vector3 dir = (compass_root.transform.position - tgt.transform.position).normalized;
+        Vector3 dir = (compassRoot.transform.position - tgt.transform.position).normalized;
         Quaternion rot = Quaternion.LookRotation(dir);
-        compass_root.transform.rotation = Quaternion.Slerp(compass_root.transform.rotation, rot, Time.deltaTime * rotationSpeed);
+        compassRoot.transform.rotation = Quaternion.Slerp(compassRoot.transform.rotation, rot, Time.deltaTime * rotationSpeed);
     }
 
     public void SetTarget(GameObject target)
