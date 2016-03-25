@@ -26,9 +26,7 @@ public class PlayerCustomer : MonoBehaviour {
     // Referece to the destination of your current customer.
     GameObject customerDestination = null;
 
-    // Where the compass will point to.
     Compass compass;
-    GameObject compassTarget;
 
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
@@ -84,6 +82,7 @@ public class PlayerCustomer : MonoBehaviour {
         {
             // Pick the compass target. If not targeting customer, find the closest one.
             // If targeting customer, point at it. If carrying a customer, point to the destination.
+            GameObject compassTarget = null;
             if (!carryingCustomer && targetCustomer == null)
                 compassTarget = ClosestCustomer();
             else if (!carryingCustomer && targetCustomer != null)
