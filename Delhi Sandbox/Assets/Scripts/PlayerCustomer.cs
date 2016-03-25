@@ -80,10 +80,8 @@ public class PlayerCustomer : MonoBehaviour {
 
     void UpdateCompass()
     {
-        Debug.Log ("UpdateCompass");
         if (compass)
         {
-            Debug.Log ("UpdateCompass2");
             // Pick the compass target. If not targeting customer, find the closest one.
             // If targeting customer, point at it. If carrying a customer, point to the destination.
             if (!carryingCustomer && targetCustomer == null)
