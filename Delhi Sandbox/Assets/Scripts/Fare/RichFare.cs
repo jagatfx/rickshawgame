@@ -2,18 +2,18 @@
 
 public class RichFare : Fare
 {
-    private const float reasonableSpeed = 4.0f;
+    private const float ReasonableSpeed = 4.0f;
 
     public FareResponse GetResponse (float directDistance, float journeyTime, float price)
     {
         FareResponse response = new FareResponse();
         float speed = FareTools.getSpeedMph(directDistance, journeyTime);
-        if (speed >= reasonableSpeed)
+        if (speed >= ReasonableSpeed)
         {
-            response.Payment = price * speed / reasonableSpeed;
+            response.Payment = price * speed / ReasonableSpeed;
             response.verbal = "Keep the change!";
         }
-        else if (speed >= 0.5f * reasonableSpeed)
+        else if (speed >= 0.5f * ReasonableSpeed)
         {
             response.Payment = price;
             response.verbal = "That was adequate.";
