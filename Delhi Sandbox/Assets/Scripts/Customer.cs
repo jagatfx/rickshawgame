@@ -12,7 +12,7 @@ public class Customer : MonoBehaviour
     GameObject range;
     Renderer rangeRend;
     Material outRange;
-//    AudioSource audSrc;
+    Rigidbody rb;
 
     public GameObject spawnPoint;
     public GameObject destination;
@@ -27,13 +27,14 @@ public class Customer : MonoBehaviour
         range = transform.GetChild (0).gameObject;
         rangeRend = range.GetComponent<Renderer> ();
         outRange = rangeRend.material;
+        rb = GetComponent<Rigidbody>();
         if (Random.Range (0.0f, 1.0f) > 0.5f) {
             fare = new RichFare ();
-        } else {
+        } else
+        {
             fare = new PoorFare ();
         }
-//        audSrc = GetComponent<AudioSource> ();
-        avatarId = CustomerAvatars.RandomId ();
+        avatarId = CustomerAvatars.RandomId();
     }
 
     #endregion
@@ -80,12 +81,19 @@ public class Customer : MonoBehaviour
     {
         // When picking up, set the parent to the player's passenger area,
         // disable their range sphere.
-        Debug.Log ("Customer: Take me to " + destination.transform.name + " please.");
-        transform.parent = passengers.transform;
-        transform.localPosition = new Vector3 (0, 0, 0);
-        range.SetActive (false);
+        Debug.Log("Customer: Take me to " + destination.transform.name + " please.");
+
+        // Turn off the rigid body collision stuff. Rotate them upright
+        // and place them in the passenger section.
+        rb.isKinematic = true;
+        rb.detectCollisions = false;
+        transform.parent = passengers.transform;    
+        transform.rotation = Quaternion.identity;
+        transform.localPosition = new Vector3(0, 0, 0);
+        range.SetActive(false);
         custRend.material = happyCustMat;
-        SpawnManager.FreeSpawnPoint (spawnPoint.GetComponent<SpawnPoint> ().id);
+        SpawnManager.FreeSpawnPoint(spawnPoint.GetComponent<SpawnPoint>().id);
+        BGMManager.PickupCustomer();
     }
 
     /// <summary>
@@ -100,7 +108,8 @@ public class Customer : MonoBehaviour
         SpawnManager.RemoveCustomer ();
         CustomerAvatars.Play (avatarId, CustAudioTypes.HappyDropoff);
         //gameObject.SetActive(false);
-        Destroy (gameObject);
+        Destroy(gameObject);
+        BGMManager.DropoffCustomer();
     }
 
     #endregion
