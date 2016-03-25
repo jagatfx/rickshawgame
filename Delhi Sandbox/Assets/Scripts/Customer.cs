@@ -51,7 +51,6 @@ public class Customer : MonoBehaviour
     {
         spawnPoint = custSpawnPoint;
         destination = custDestination;
-        fare.destination = destination;
     }
 
     /// <summary>

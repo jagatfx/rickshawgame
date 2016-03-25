@@ -100,7 +100,6 @@ public class GameManager : MonoBehaviour
         moneyText.text = "Money: $" + fpc.money;
         if (null != fpc.fare) {
             moneyText.text += " Charge: $" + fpc.charge;
-            fareText.text = "Fare type: " + fpc.fare.type;
         } else
         {
             fareText.text = "";

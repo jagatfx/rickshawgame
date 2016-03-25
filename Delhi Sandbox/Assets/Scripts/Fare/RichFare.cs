@@ -2,24 +2,23 @@
 
 public class RichFare : Fare
 {
-    private float ReasonableSpeed = 4f;
+    private const float reasonableSpeed = 4.0f;
 
-    public RichFare() : base()
-    {
-        type = "Rich";
-    }
-
-    public override FareResponse GetResponse (float pathDistance, float journeyTime, float price)
+    public FareResponse GetResponse (float directDistance, float journeyTime, float price)
     {
         FareResponse response = new FareResponse();
-        float speed = FareTools.getSpeedMph(pathDistance, journeyTime);
-        if (speed >= ReasonableSpeed) {
-            response.Payment = price * speed / ReasonableSpeed;
+        float speed = FareTools.getSpeedMph(directDistance, journeyTime);
+        if (speed >= reasonableSpeed)
+        {
+            response.Payment = price * speed / reasonableSpeed;
             response.verbal = "Keep the change!";
-        } else if (speed >= 0.5f * ReasonableSpeed) {
+        }
+        else if (speed >= 0.5f * reasonableSpeed)
+        {
             response.Payment = price;
             response.verbal = "That was adequate.";
-        } else 
+        }
+        else 
         {
             response.Payment = 0.5f * price;
             response.verbal = "Forget it! You're lucky I'm paying you at all!";
