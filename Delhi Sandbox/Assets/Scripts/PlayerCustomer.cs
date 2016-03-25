@@ -11,8 +11,6 @@ public class PlayerCustomer : MonoBehaviour {
     // The max speed you must be traveling in order to pick up or drop off a customer.
     public float maxCustPickupSpeed = 0.25f;
 
-    Compass compass;
-
     // Indicates if you are currently carrying a customer and if
     // you are in range of their destination.
     bool carryingCustomer = false;
@@ -29,6 +27,7 @@ public class PlayerCustomer : MonoBehaviour {
     GameObject customerDestination = null;
 
     // Where the compass will point to.
+    Compass compass;
     GameObject compassTarget;
 
     // Reference to rigid body of car. Used for checking current speed.
@@ -79,17 +78,27 @@ public class PlayerCustomer : MonoBehaviour {
 
     }
 
+    void UpdateCompass()
+    {
+        Debug.Log ("UpdateCompass");
+        if (compass)
+        {
+            Debug.Log ("UpdateCompass2");
+            // Pick the compass target. If not targeting customer, find the closest one.
+            // If targeting customer, point at it. If carrying a customer, point to the destination.
+            if (!carryingCustomer && targetCustomer == null)
+                compassTarget = ClosestCustomer();
+            else if (!carryingCustomer && targetCustomer != null)
+                compassTarget = targetCustomer;
+            else if (carryingCustomer)
+                compassTarget = customerDestination;
+            compass.SetTarget(compassTarget);
+        }
+    }
+
     void Update()
     {
-        // Pick the compass target. If not targeting customer, find the closest one.
-        // If targeting customer, point at it. If carrying a customer, point to the destination.
-        if (!carryingCustomer && targetCustomer == null)
-            compassTarget = ClosestCustomer();
-        else if (!carryingCustomer && targetCustomer != null)
-            compassTarget = targetCustomer;
-        else if (carryingCustomer)
-            compassTarget = customerDestination;
-        compass.SetTarget(compassTarget);
+        UpdateCompass ();
 
         // If not carrying a customer and one has been targeted and the care is moving slow enough, pick up the customer.
         if (!carryingCustomer && targetCustomer != null && rb.velocity.magnitude <= maxCustPickupSpeed)
