@@ -18,7 +18,7 @@ public class BGMManager : MonoBehaviour {
         }
         else if (instance != this)
         {
-            Debug.Log("Destroying extra spawnmanager instance.");
+            Debug.Log("Destroying extra BGMManager instance.");
             Destroy(gameObject);
         }
         bgmSource.clip = normalBGM;
