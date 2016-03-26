@@ -134,9 +134,10 @@ public class SpawnManager : MonoBehaviour {
         for (int cntr = 0; cntr < 10; cntr++)
         {
             i = Random.Range(0, spawnPoints.Length);
-            if (i != spawnPointId)
+            if (i != spawnPointId && openSpawnPoints.Contains(i))
                 break;
         }
+        openSpawnPoints.Remove(i);
         return spawnPoints[i];
     }
     #endregion
