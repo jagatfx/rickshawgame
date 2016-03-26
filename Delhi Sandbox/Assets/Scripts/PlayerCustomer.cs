@@ -22,12 +22,12 @@ public class PlayerCustomer : MonoBehaviour {
     GameObject targetCustomer = null;
     // References to scripts related to your current customer.
     Customer cust;
-    SpawnPoint dest;
+    SpawnPoint customerDestinationPt;
     // Referece to the destination of your current customer.
     GameObject customerDestination = null;
 
-    Compass compass;
-    RickshawAIControl aiController;
+    private Compass compass;
+    private RickshawAIControl aiController;
 
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
@@ -128,6 +128,21 @@ public class PlayerCustomer : MonoBehaviour {
         }
     }
 
+    public void Reset ()
+    {
+        targetCustomer = null;
+        carryingCustomer = false;
+        customerDestination = null;
+        customerDestinationPt = null;
+        arrived = false;
+        if (cust)
+        {
+            cust.Reset ();
+            cust = null;
+        }
+        farePlayerController.Reset ();
+    }
+
     #endregion
 
     #region Player/Customer/Destination Interactions
@@ -151,26 +166,26 @@ public class PlayerCustomer : MonoBehaviour {
     {
         Debug.Log("Player: Picking up customer.");
         farePlayerController.PickUp (cust);
-        cust.Pickup(passengers);
+        cust.Pickup(passengers.transform);
         carryingCustomer = true;
 
         customerDestination = cust.destination;
-        dest = customerDestination.GetComponent<SpawnPoint>();
-        dest.Activate();
+        customerDestinationPt = customerDestination.GetComponent<SpawnPoint>();
+        customerDestinationPt.Activate();
     }
 
     void CloseToDestination()
     {
         Debug.Log("Player: Close to destination.");
         arrived = true;
-        dest.Enter();
+        customerDestinationPt.Enter();
     }
 
     void MissedDestination()
     {
         Debug.Log("Player: Leaving Destination without dropping customer.");
         arrived = false;
-        dest.Exit();
+        customerDestinationPt.Exit();
     }
 
     void DropOffCustomer()
@@ -182,7 +197,7 @@ public class PlayerCustomer : MonoBehaviour {
         targetCustomer = null;
         arrived = false;
         carryingCustomer = false;
-        dest.Deactivate();
+        customerDestinationPt.Deactivate();
     }
 
     void EjectCustomer()

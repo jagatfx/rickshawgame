@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviour
 
     private void SetCameraTargets()
     {
+        /// for now just track Player 1
 //        Transform[] targets = new Transform[players.Length];
         Transform[] targets = new Transform[1];
 

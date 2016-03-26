@@ -81,7 +81,7 @@ public class Customer : MonoBehaviour
     /// <summary>
     /// Changes to customer when being picked up by player.
     /// </summary>
-    public void Pickup (GameObject passengers)
+    public void Pickup (Transform passengerTransform)
     {
         isSeekingRide = false;
         // When picking up, set the parent to the player's passenger area,
@@ -92,7 +92,7 @@ public class Customer : MonoBehaviour
         // and place them in the passenger section.
         rb.isKinematic = true;
         rb.detectCollisions = false;
-        transform.parent = passengers.transform;    
+        transform.parent = passengerTransform;    
         transform.rotation = Quaternion.identity;
         transform.localPosition = new Vector3(0, 0, 0);
         range.SetActive(false);
@@ -108,9 +108,15 @@ public class Customer : MonoBehaviour
         // When dropping off customer, transfer from passenger area to the
         // customer root in the hierarchy, and then disable them.
         Debug.Log ("Customer: Thanks for the ride!");
-        transform.parent = customerRoot;
-        SpawnManager.RemoveCustomer ();
+        SpawnManager.FreeSpawnPoint (destination.GetComponent<SpawnPoint> ().id);
         CustomerAvatars.Play (avatarId, CustAudioTypes.HappyDropoff);
+        Reset ();
+    }
+
+    public void Reset()
+    {
+        SpawnManager.RemoveCustomer ();
+        transform.parent = customerRoot;
         //gameObject.SetActive(false);
         Destroy(gameObject);
     }

@@ -35,6 +35,8 @@ public class PlayerManager
 
         m_Instance.SetActive(false);
         m_Instance.SetActive(true);
+
+        playerCustomer.Reset ();
     }
 
     public bool IsAIPlayer()

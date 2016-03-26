@@ -58,9 +58,10 @@ public class SpawnManager : MonoBehaviour {
 
     void Update()
     {
-        // Test, spawn passenger at first spawnp point.
+        // Test, spawn passenger at first spawn point.
         for (int i = availableCustomers; i < maxCustomers; i++)
         {
+            Debug.Log ("Spawning customer: "+i);
             Spawn();
         }
 
@@ -119,7 +120,10 @@ public class SpawnManager : MonoBehaviour {
     /// </summary>
     public static void RemoveCustomer()
     {
-        instance.availableCustomers--;
+        if (instance.availableCustomers > 0)
+        {
+            instance.availableCustomers--;
+        }
     }
 
     /// <summary>

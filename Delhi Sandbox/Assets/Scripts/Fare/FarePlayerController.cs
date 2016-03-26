@@ -19,11 +19,7 @@ public class FarePlayerController : MonoBehaviour {
 
     void Awake()
     {
-        money = 0.0f;
-        charge = 0.0f;
-        lastPickupTime = -Mathf.Infinity;
-        lastPosition = transform.position;
-        pathDistance = 0.0f;
+        Reset ();
     }
 
     void Update ()
@@ -64,5 +60,14 @@ public class FarePlayerController : MonoBehaviour {
         //              "price: $" + price + "\n" +
         //              "fareResponse.Payment: $" + fareResponse.Payment + "\n" +
         //              "fareResponse.Verbal: \"" + fareResponse.Verbal + "\"");
+    }
+
+    public void Reset()
+    {
+        money = 0.0f;
+        charge = 0.0f;
+        lastPickupTime = -Mathf.Infinity;
+        lastPosition = transform.position;
+        pathDistance = 0.0f;
     }
 }
