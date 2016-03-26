@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public Text moneyText;
     public Text timerText;
     public GameObject playerPrefab;
+    public GameObject aiPlayerPrefab;
     public PlayerManager[] players;
 
     private int missionNumber;
@@ -40,23 +41,34 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < players.Length; i++)
         {
-            players[i].m_Instance =
-                Instantiate(playerPrefab, players[i].spawnPoint.position, players[i].spawnPoint.rotation) as GameObject;
-            players[i].playerNumber = i + 1;
-            players[i].Setup();
-            PlayerCustomer pc = players[0].m_Instance.GetComponent<PlayerCustomer>();
-            players [i].playerCustomer = pc;
+            PlayerManager player = players [i];
+            if (player.IsAIPlayer())
+            {
+                player.m_Instance = Instantiate(aiPlayerPrefab, players[i].spawnPoint.position,
+                    players[i].spawnPoint.rotation) as GameObject;
+            }
+            else
+            {
+                player.m_Instance = Instantiate(playerPrefab, players[i].spawnPoint.position,
+                    players[i].spawnPoint.rotation) as GameObject;
+            }
+            player.playerNumber = i + 1;
+            player.Setup();
+            PlayerCustomer pc = player.m_Instance.GetComponent<PlayerCustomer>();
+            player.playerCustomer = pc;
         }
     }
 
 
     private void SetCameraTargets()
     {
-        Transform[] targets = new Transform[players.Length];
+//        Transform[] targets = new Transform[players.Length];
+        Transform[] targets = new Transform[1];
 
         for (int i = 0; i < targets.Length; i++)
         {
             targets[i] = players[i].m_Instance.transform;
+            break;
         }
 
         cameraControl.targets = targets;

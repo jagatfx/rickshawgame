@@ -10,6 +10,11 @@ public class MissionTimer : MonoBehaviour
     private bool isCountingDown;
     private float timeRemaining;
 
+    /// <summary>
+    /// Singleton meant to manage timer.
+    /// </summary>
+    public static MissionTimer instance = null;
+
     void SetupTimer ()
     {
         timeElapsed = false;
@@ -18,9 +23,19 @@ public class MissionTimer : MonoBehaviour
         timeRemaining = missionTime;
     }
 
-    void Start ()
+    void Awake()
     {
-        SetupTimer ();
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+            SetupTimer ();
+        }
+        else if (instance != this)
+        {
+            Debug.Log("Destroying extra MissionTimer instance.");
+            Destroy(gameObject);
+        }
     }
 
     void Update ()

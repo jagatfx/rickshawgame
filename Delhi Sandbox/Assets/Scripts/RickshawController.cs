@@ -159,6 +159,12 @@ public class RickshawController : MonoBehaviour
             m_WheelColliders[2].brakeTorque = hbTorque;
             m_WheelColliders[3].brakeTorque = hbTorque;
         }
+        else
+        {
+            m_WheelColliders[2].brakeTorque = 0f;
+            m_WheelColliders[3].brakeTorque = 0f;
+        }
+
 
 
         CalculateRevs();
@@ -173,6 +179,7 @@ public class RickshawController : MonoBehaviour
     private void CapSpeed()
     {
         float speed = m_Rigidbody ? m_Rigidbody.velocity.magnitude : 0;
+
         switch (m_SpeedType)
         {
         case SpeedType.MPH:
@@ -263,7 +270,7 @@ public class RickshawController : MonoBehaviour
 
     // checks if the wheels are spinning and is so does three things
     // 1) emits particles
-    // 2) plays tiure skidding sounds
+    // 2) plays tire skidding sounds
     // 3) leaves skidmarks on the ground
     // these effects are controlled through the WheelEffects class
     private void CheckForWheelSpin()

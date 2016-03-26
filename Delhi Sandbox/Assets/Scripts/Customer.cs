@@ -4,7 +4,8 @@ using System.Collections;
 public class Customer : MonoBehaviour
 {
 
-    public Material happyCustMat, inRangeMat;
+    public Material happyCustMat;
+    public Material inRangeMat;
     public Fare fare;
 
     Transform customerRoot;
@@ -17,6 +18,8 @@ public class Customer : MonoBehaviour
     public GameObject spawnPoint;
     public GameObject destination;
     public int avatarId;
+
+    private bool isSeekingRide;
 
     #region MonoBehavior Events
 
@@ -35,6 +38,7 @@ public class Customer : MonoBehaviour
             fare = new PoorFare ();
         }
         avatarId = CustomerAvatars.RandomId();
+        isSeekingRide = true;
     }
 
     #endregion
@@ -79,6 +83,7 @@ public class Customer : MonoBehaviour
     /// </summary>
     public void Pickup (GameObject passengers)
     {
+        isSeekingRide = false;
         // When picking up, set the parent to the player's passenger area,
         // disable their range sphere.
         Debug.Log("Customer: Take me to " + destination.transform.name + " please.");
@@ -93,7 +98,6 @@ public class Customer : MonoBehaviour
         range.SetActive(false);
         custRend.material = happyCustMat;
         SpawnManager.FreeSpawnPoint(spawnPoint.GetComponent<SpawnPoint>().id);
-        BGMManager.PickupCustomer();
     }
 
     /// <summary>
@@ -109,7 +113,11 @@ public class Customer : MonoBehaviour
         CustomerAvatars.Play (avatarId, CustAudioTypes.HappyDropoff);
         //gameObject.SetActive(false);
         Destroy(gameObject);
-        BGMManager.DropoffCustomer();
+    }
+
+    public bool IsSeekingRide()
+    {
+        return isSeekingRide;
     }
 
     #endregion

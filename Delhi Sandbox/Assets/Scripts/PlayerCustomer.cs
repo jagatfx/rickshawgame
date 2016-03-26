@@ -27,6 +27,7 @@ public class PlayerCustomer : MonoBehaviour {
     GameObject customerDestination = null;
 
     Compass compass;
+    RickshawAIControl aiController;
 
     // Reference to rigid body of car. Used for checking current speed.
     Rigidbody rb;
@@ -39,6 +40,7 @@ public class PlayerCustomer : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         farePlayerController = farePlayerControllerObj.GetComponent<FarePlayerController> ();
         compass = GetComponent<Compass>();
+        aiController = GetComponentInParent<RickshawAIControl>();
     }
 
     void OnTriggerStay(Collider other)
@@ -76,34 +78,54 @@ public class PlayerCustomer : MonoBehaviour {
 
     }
 
-    void UpdateCompass()
+    void UpdateForTarget()
     {
-        if (compass)
+        // Pick the compass target. If not targeting customer, find the closest one.
+        // If targeting customer, point at it. If carrying a customer, point to the destination.
+        GameObject currentTarget = null;
+        if (!carryingCustomer && targetCustomer == null)
         {
-            // Pick the compass target. If not targeting customer, find the closest one.
-            // If targeting customer, point at it. If carrying a customer, point to the destination.
-            GameObject compassTarget = null;
-            if (!carryingCustomer && targetCustomer == null)
-                compassTarget = ClosestCustomer();
-            else if (!carryingCustomer && targetCustomer != null)
-                compassTarget = targetCustomer;
-            else if (carryingCustomer)
-                compassTarget = customerDestination;
-            compass.SetTarget(compassTarget);
+            currentTarget = ClosestCustomer();
+        }
+        else if (!carryingCustomer && targetCustomer != null)
+        {
+            currentTarget = targetCustomer;
+        }
+        else if (carryingCustomer)
+        {
+            currentTarget = customerDestination;
+        }
+
+        if (currentTarget)
+        {
+            if (compass)
+            {
+                compass.SetTarget (currentTarget);
+            }
+            if (aiController)
+            {
+                aiController.SetTarget (currentTarget.transform);
+            }
         }
     }
 
     void Update()
     {
-        UpdateCompass ();
+        UpdateForTarget ();
 
-        // If not carrying a customer and one has been targeted and the care is moving slow enough, pick up the customer.
-        if (!carryingCustomer && targetCustomer != null && rb.velocity.magnitude <= maxCustPickupSpeed)
+        if (!carryingCustomer && targetCustomer != null && 
+            targetCustomer.GetComponent<Customer>().IsSeekingRide() &&
+            rb.velocity.magnitude <= maxCustPickupSpeed)
+        {
+            // If not carrying a customer and one has been targeted and 
+            // the car is moving slow enough, pick up the customer.
             PickupCustomer();
-
-        // You have arrived at the customer's destination.
+        }
         else if (arrived && rb.velocity.magnitude <= maxCustPickupSpeed)
+        {
+            // You have arrived at the customer's destination.
             DropOffCustomer();
+        }
     }
 
     #endregion
@@ -172,14 +194,20 @@ public class PlayerCustomer : MonoBehaviour {
     {
         GameObject[] customers = GameObject.FindGameObjectsWithTag("Customer");
 
-        if (null != customers)
+        if (null != customers && customers.Length > 0)
         {
             int closest = 0;
             float closestDist = Mathf.Infinity;
 
             for (int i = 0; i < customers.Length; i++) {
-                float dist = Vector3.Distance (customers [i].transform.position, transform.position);
-                if (dist < closestDist) {
+                Customer customer = customers [i].GetComponent<Customer>();
+                if (!customer || !customer.IsSeekingRide())
+                {
+                    continue;
+                }
+                float dist = Vector3.Distance (customers[i].transform.position, transform.position);
+                if (dist < closestDist)
+                {
                     closest = i;
                     closestDist = dist;
                 }

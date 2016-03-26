@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerManager
 {
     public Transform spawnPoint;
+    public bool isAIPlayer = false;
 
     [HideInInspector] public int playerNumber;
     [HideInInspector] public GameObject m_Instance;
@@ -34,5 +35,10 @@ public class PlayerManager
 
         m_Instance.SetActive(false);
         m_Instance.SetActive(true);
+    }
+
+    public bool IsAIPlayer()
+    {
+        return isAIPlayer;
     }
 }
