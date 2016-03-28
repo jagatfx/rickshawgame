@@ -69,28 +69,28 @@ public class CustomerAvatars : MonoBehaviour{
             CustomerAvatar avatar = instance.customerAvatars [id];
             switch (type)
             {
-                case CustAudioTypes.Hail:
-                    clip = avatar.hail[Random.Range(0, avatar.hail.Count)];
-                    break;
-                case CustAudioTypes.Miss:
-                    clip = avatar.pass[Random.Range(0, avatar.pass.Count)];
-                    break;
-                case CustAudioTypes.HappyDropoff:
-                    clip = avatar.happyDropoff[Random.Range(0, avatar.happyDropoff.Count)];
-                    break;
-                case CustAudioTypes.NeutralDropoff:
-                    clip = avatar.neutralDropoff[Random.Range(0, avatar.neutralDropoff.Count)];
-                    break;
-                case CustAudioTypes.UnhappyDropoff:
-                    clip = avatar.unhappyDropoff[Random.Range(0, avatar.unhappyDropoff.Count)];
-                    break;
-                default:
-                    Debug.Log("No " + type + " audio clip for id=" + id);
-                    break;
+            case CustAudioTypes.Hail:
+                clip = avatar.hail[Random.Range (0, avatar.hail.Count)];
+                break;
+            case CustAudioTypes.Miss:
+                clip = avatar.pass[Random.Range(0, avatar.pass.Count)];
+                break;
+            case CustAudioTypes.HappyDropoff:
+                clip = avatar.happyDropoff[Random.Range(0, avatar.happyDropoff.Count)];
+                break;
+            case CustAudioTypes.NeutralDropoff:
+                clip = avatar.neutralDropoff[Random.Range(0, avatar.neutralDropoff.Count)];
+                break;
+            case CustAudioTypes.UnhappyDropoff:
+                clip = avatar.unhappyDropoff[Random.Range(0, avatar.unhappyDropoff.Count)];
+                break;
+            default:
+                Debug.Log("No " + type + " audio clip for id=" + id);
+                break;
             }
             if (clip)
             {
-                instance.audioSource.PlayOneShot(clip, 0.5f);
+                instance.audioSource.PlayOneShot(clip, 1.0f);
             }
         }
     }
