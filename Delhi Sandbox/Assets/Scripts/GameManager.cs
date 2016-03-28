@@ -66,11 +66,12 @@ public class GameManager : MonoBehaviour
 //        Transform[] targets = new Transform[players.Length];
         Transform[] targets = new Transform[1];
 
-        for (int i = 0; i < targets.Length; i++)
-        {
-            targets[i] = players[i].m_Instance.transform;
-            break;
-        }
+        targets[0] = players[0].m_Instance.transform;
+//        for (int i = 0; i < targets.Length; i++)
+//        {
+//            targets[i] = players[i].m_Instance.transform;
+//            break;
+//        }
 
         cameraControl.targets = targets;
     }

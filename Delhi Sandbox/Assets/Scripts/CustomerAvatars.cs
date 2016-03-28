@@ -63,30 +63,35 @@ public class CustomerAvatars : MonoBehaviour{
         // Only switch up the audio and play it if nothing is already playing.
         // If events are too close, the second one may not be played.
         // ToDo? Multiple channels to allow for more than 1 customer to talk? Or space them out better? Or just leave alone?
-        if (!instance.audioSource.isPlaying)
+//        if (!instance.audioSource.isPlaying)
         {
+            AudioClip clip = null;
+            CustomerAvatar avatar = instance.customerAvatars [id];
             switch (type)
             {
                 case CustAudioTypes.Hail:
-                    instance.audioSource.clip = instance.customerAvatars[id].hail[Random.Range(0, instance.customerAvatars[id].hail.Count)];
+                    clip = avatar.hail[Random.Range(0, avatar.hail.Count)];
                     break;
                 case CustAudioTypes.Miss:
-                    instance.audioSource.clip = instance.customerAvatars[id].pass[Random.Range(0, instance.customerAvatars[id].pass.Count)];
+                    clip = avatar.pass[Random.Range(0, avatar.pass.Count)];
                     break;
                 case CustAudioTypes.HappyDropoff:
-                    instance.audioSource.clip = instance.customerAvatars[id].happyDropoff[Random.Range(0, instance.customerAvatars[id].happyDropoff.Count)];
+                    clip = avatar.happyDropoff[Random.Range(0, avatar.happyDropoff.Count)];
                     break;
                 case CustAudioTypes.NeutralDropoff:
-                    instance.audioSource.clip = instance.customerAvatars[id].neutralDropoff[Random.Range(0, instance.customerAvatars[id].neutralDropoff.Count)];
+                    clip = avatar.neutralDropoff[Random.Range(0, avatar.neutralDropoff.Count)];
                     break;
                 case CustAudioTypes.UnhappyDropoff:
-                    instance.audioSource.clip = instance.customerAvatars[id].unhappyDropoff[Random.Range(0, instance.customerAvatars[id].unhappyDropoff.Count)];
+                    clip = avatar.unhappyDropoff[Random.Range(0, avatar.unhappyDropoff.Count)];
                     break;
                 default:
                     Debug.Log("No " + type + " audio clip for id=" + id);
                     break;
             }
-            instance.audioSource.Play();
+            if (clip)
+            {
+                instance.audioSource.PlayOneShot(clip, 0.5f);
+            }
         }
     }
 }
