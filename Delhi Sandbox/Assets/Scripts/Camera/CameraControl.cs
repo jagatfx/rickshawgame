@@ -5,7 +5,10 @@ public class CameraControl : MonoBehaviour
     public float dampTime = 0.2f;
     public float screenEdgeBuffer = 4f;
     public float minSize = 6.5f;
+    public bool followPlayer = true;
+    public bool useStreetView = true;
     [HideInInspector] public Transform[] targets;
+    public Camera overheadMapCamera;
 
     private Camera m_Camera;
     private float zoomSpeed;
@@ -96,8 +99,31 @@ public class CameraControl : MonoBehaviour
     {
         FindAveragePosition();
 
-        transform.position = desiredPosition;
+        if (!followPlayer)
+        {
+            transform.position = desiredPosition;
+        }
 
         m_Camera.orthographicSize = FindRequiredSize();
+    }
+
+    public void SetPlayerTransform (Transform playerTransform)
+    {
+        if (followPlayer)
+        {
+            transform.parent = playerTransform;
+            if (useStreetView)
+            {
+                Vector3 position = transform.position;
+                Quaternion rotation = new Quaternion (0, 0, 0, 0);
+                position.y = 5;
+                position.z = -20;
+                m_Camera.transform.position = position;
+                m_Camera.transform.rotation = rotation;
+
+                Quaternion overheadRotation = new Quaternion(90, 0, 0, 0);
+                overheadMapCamera.transform.rotation = overheadRotation;
+            }
+        }
     }
 }

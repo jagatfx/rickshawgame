@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
 //        }
 
         cameraControl.targets = targets;
+        cameraControl.SetPlayerTransform (players [0].m_Instance.transform);
     }
 
 
