@@ -9,18 +9,11 @@ public class CameraControl : MonoBehaviour
     public bool useStreetView = true;
     [HideInInspector] public Transform[] targets;
     public Camera overheadMapCamera;
+    public Camera mainCamera;
 
-    private Camera m_Camera;
     private float zoomSpeed;
     private Vector3 moveVelocity;
     private Vector3 desiredPosition;
-
-
-    private void Awake()
-    {
-        m_Camera = GetComponentInChildren<Camera>();
-    }
-
 
     private void FixedUpdate()
     {
@@ -63,7 +56,7 @@ public class CameraControl : MonoBehaviour
     private void Zoom()
     {
         float requiredSize = FindRequiredSize();
-        m_Camera.orthographicSize = Mathf.SmoothDamp(m_Camera.orthographicSize, requiredSize, ref zoomSpeed, dampTime);
+        mainCamera.orthographicSize = Mathf.SmoothDamp(mainCamera.orthographicSize, requiredSize, ref zoomSpeed, dampTime);
     }
 
 
@@ -84,7 +77,7 @@ public class CameraControl : MonoBehaviour
 
             size = Mathf.Max (size, Mathf.Abs (desiredPosToTarget.y));
 
-            size = Mathf.Max (size, Mathf.Abs (desiredPosToTarget.x) / m_Camera.aspect);
+            size = Mathf.Max (size, Mathf.Abs (desiredPosToTarget.x) / mainCamera.aspect);
         }
 
         size += screenEdgeBuffer;
@@ -104,7 +97,7 @@ public class CameraControl : MonoBehaviour
             transform.position = desiredPosition;
         }
 
-        m_Camera.orthographicSize = FindRequiredSize();
+        mainCamera.orthographicSize = FindRequiredSize();
     }
 
     public void SetPlayerTransform (Transform playerTransform)
@@ -118,11 +111,11 @@ public class CameraControl : MonoBehaviour
                 Quaternion rotation = new Quaternion (0, 0, 0, 0);
                 position.y = 5;
                 position.z = -20;
-                m_Camera.transform.position = position;
-                m_Camera.transform.rotation = rotation;
+                mainCamera.transform.position = position;
+                mainCamera.transform.rotation = rotation;
 
-                Quaternion overheadRotation = new Quaternion(90, 0, 0, 0);
-                overheadMapCamera.transform.rotation = overheadRotation;
+//                Quaternion overheadRotation = new Quaternion(90, 0, 0, 0);
+//                overheadMapCamera.transform.rotation = overheadRotation;
             }
         }
     }
