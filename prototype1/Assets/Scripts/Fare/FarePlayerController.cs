@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 
 public class FarePlayerController : MonoBehaviour {
 
@@ -69,5 +67,6 @@ public class FarePlayerController : MonoBehaviour {
         lastPickupTime = -Mathf.Infinity;
         lastPosition = transform.position;
         pathDistance = 0.0f;
+        fare = null;
     }
 }

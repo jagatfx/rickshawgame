@@ -9,9 +9,9 @@ public class GameManager : MonoBehaviour
     public float endDelay = 3f;
     public CameraControl cameraControl;
     public Text messageText;
-    public Text scoreText;
+    public Text playerText;
     public Text fareText;
-    public Text moneyText;
+    public Text scoresText;
     public Text timerText;
     public GameObject playerPrefab;
     public GameObject aiPlayerPrefab;
@@ -107,20 +107,30 @@ public class GameManager : MonoBehaviour
 
     private void updateScore()
     {
-        // TODO: do not hard-code for player1, pretty up score/money display
+        // TODO: figure out active player num for when more than one player
         timerText.text = "Time Remaining: "+FareTools.roundTwoDecimals(missionTimer.TimeRemaining ());
-        scoreText.text = "Player 1";// $"+players[0].playerCustomer.CurrentMoney;
-        FarePlayerController fpc = players [0].playerCustomer.farePlayerController;
-        moneyText.text = "Money: $" + fpc.money;
-        if (null != fpc.fare) {
-            moneyText.text += " Charge: $" + fpc.charge;
-        } else
+        playerText.text = "Player 1";
+        scoresText.text = "";
+        for (int i = 0; i < players.Length; i++)
         {
-            fareText.text = "";
-        }
-        if (null != fpc.fareResponse)
-        {
-            fareText.text += " \"" + fpc.fareResponse.verbal + "\"";
+            FarePlayerController fpc = players [i].playerCustomer.farePlayerController;
+            scoresText.text += "Player "+(i+1)+": $" + fpc.money;
+            if (null != fpc.fare)
+            {
+                scoresText.text += " Charge: $" + fpc.charge + "\n";
+            }
+            else
+            {
+                if (i == 0)
+                {
+                    fareText.text = "";
+                }
+                scoresText.text += "\n";
+            }
+            if (i == 0 && null != fpc.fareResponse)
+            {
+                fareText.text += " \"" + fpc.fareResponse.verbal + "\"";
+            }
         }
     }
 
@@ -154,6 +164,18 @@ public class GameManager : MonoBehaviour
     private string EndMessage()
     {
         string message = "MISSION OVER!";
+        int winningPlayer = 1;
+        float winningScore = 0f;
+        for (int i = 0; i < players.Length; i++)
+        {
+            FarePlayerController fpc = players [i].playerCustomer.farePlayerController;
+            if (fpc.money > winningScore)
+            {
+                winningPlayer = i + 1;
+                winningScore = fpc.money;
+            }
+        }
+        message += "\nPlayer " + winningPlayer + " Wins!";
         return message;
     }
 
