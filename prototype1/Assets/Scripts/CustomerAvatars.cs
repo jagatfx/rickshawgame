@@ -25,9 +25,9 @@ public class CustomerAvatar
 public class CustomerAvatars : MonoBehaviour{
 
     public static CustomerAvatars instance = null;
-
-    public AudioSource audioSource;
     public List<CustomerAvatar> customerAvatars;
+
+    private AudioSource audioSource;
 
     void Awake()
     {
@@ -36,6 +36,7 @@ public class CustomerAvatars : MonoBehaviour{
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            audioSource = GetComponent<AudioSource> ();
         }
         else if (instance != this)
         {
@@ -63,7 +64,7 @@ public class CustomerAvatars : MonoBehaviour{
         // Only switch up the audio and play it if nothing is already playing.
         // If events are too close, the second one may not be played.
         // ToDo? Multiple channels to allow for more than 1 customer to talk? Or space them out better? Or just leave alone?
-//        if (!instance.audioSource.isPlaying)
+        if (!instance.audioSource.isPlaying)
         {
             AudioClip clip = null;
             CustomerAvatar avatar = instance.customerAvatars [id];

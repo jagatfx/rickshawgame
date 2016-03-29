@@ -3,25 +3,27 @@ using System.Collections;
 
 public class BGMManager : MonoBehaviour {
 
-    public static BGMManager instance = null;
-    public AudioSource bgmSource;
+    public static BGMManager instance;
     public AudioClip normalBGM;
     public AudioClip carryingCustomer;
 
-    // Use this for initialization
+    private AudioSource bgmSource;
+
     void Awake () {
         // Init singleton
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            bgmSource = GetComponent<AudioSource> ();
+            bgmSource.clip = normalBGM;
+            bgmSource.Play ();
         }
         else if (instance != this)
         {
             Debug.Log("Destroying extra BGMManager instance.");
             Destroy(gameObject);
         }
-        bgmSource.clip = normalBGM;
     }
 
     public static void PickupCustomer()
