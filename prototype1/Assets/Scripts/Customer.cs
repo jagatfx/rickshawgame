@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Customer : MonoBehaviour
 {
@@ -7,17 +6,16 @@ public class Customer : MonoBehaviour
     public Material happyCustMat;
     public Material inRangeMat;
     public Fare fare;
-
-    Transform customerRoot;
-    MeshRenderer custRend;
-    GameObject range;
-    Renderer rangeRend;
-    Material outRange;
-    Rigidbody rb;
-
+    public GameObject range;
     public GameObject spawnPoint;
     public GameObject destination;
     public int avatarId;
+
+    Transform customerRoot;
+    MeshRenderer custRend;
+    Renderer rangeRend;
+    Material outRange;
+    Rigidbody rb;
 
     private bool isSeekingRide;
 
@@ -27,13 +25,13 @@ public class Customer : MonoBehaviour
     {
         customerRoot = transform;
         custRend = GetComponent<MeshRenderer> ();
-        range = transform.GetChild (0).gameObject;
         rangeRend = range.GetComponent<Renderer> ();
         outRange = rangeRend.material;
         rb = GetComponent<Rigidbody>();
         if (Random.Range (0.0f, 1.0f) > 0.5f) {
             fare = new RichFare ();
-        } else
+        }
+        else
         {
             fare = new PoorFare ();
         }

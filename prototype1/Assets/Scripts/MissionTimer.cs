@@ -4,18 +4,18 @@ using System.Collections;
 public class MissionTimer : MonoBehaviour
 {
 
-    public float missionTime = 30.0f;
+    public static float missionTime = 90.0f;
 
-    private bool timeElapsed;
-    private bool isCountingDown;
-    private float timeRemaining;
+    private static bool timeElapsed;
+    private static bool isCountingDown;
+    private static float timeRemaining;
 
     /// <summary>
     /// Singleton meant to manage timer.
     /// </summary>
     public static MissionTimer instance = null;
 
-    void SetupTimer ()
+    private static void SetupTimer ()
     {
         timeElapsed = false;
         isCountingDown = false;
@@ -50,37 +50,37 @@ public class MissionTimer : MonoBehaviour
         }
     }
 
-    public float TimeRemaining ()
+    public static float TimeRemaining ()
     {
         return timeRemaining;
     }
 
-    public void ResetTimer ()
+    public static void ResetTimer ()
     {
         SetupTimer ();
     }
 
-    public void StartCountdown ()
+    public static void StartCountdown ()
     {
         isCountingDown = true;
     }
 
-    public void PauseCountdown ()
+    public static void PauseCountdown ()
     {
         isCountingDown = false;
     }
 
-    public void AddTime (float addTime)
+    public static void AddTime (float addTime)
     {
         timeRemaining += addTime;
     }
 
-    public void SubtractTime (float subTime)
+    public static void SubtractTime (float subTime)
     {
         timeRemaining -= subTime;
     }
 
-    public bool IsTimeElapsed ()
+    public static bool IsTimeElapsed ()
     {
         return timeElapsed;
     }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class CameraControl : MonoBehaviour
 {
@@ -113,9 +114,6 @@ public class CameraControl : MonoBehaviour
                 position.z = -20;
                 mainCamera.transform.position = position;
                 mainCamera.transform.rotation = rotation;
-
-//                Quaternion overheadRotation = new Quaternion(90, 0, 0, 0);
-//                overheadMapCamera.transform.rotation = overheadRotation;
             }
         }
     }

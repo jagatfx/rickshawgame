@@ -9,8 +9,8 @@ public class BGMManager : MonoBehaviour {
 
     private AudioSource bgmSource;
 
-    void Awake () {
-        // Init singleton
+    void Awake()
+    {
         if (instance == null)
         {
             instance = this;
@@ -23,6 +23,26 @@ public class BGMManager : MonoBehaviour {
         {
             Debug.Log("Destroying extra BGMManager instance.");
             Destroy(gameObject);
+        }
+    }
+
+    void Update()
+    {
+        if (MissionTimer.TimeRemaining () < 30.0f)
+        {
+            if (instance.bgmSource.clip != instance.carryingCustomer)
+            {
+                instance.bgmSource.clip = instance.carryingCustomer;
+                instance.bgmSource.Play();
+            }
+        }
+        else
+        {
+            if (instance.bgmSource.clip != instance.normalBGM)
+            {
+                instance.bgmSource.clip = instance.normalBGM;
+                instance.bgmSource.Play();
+            }
         }
     }
 

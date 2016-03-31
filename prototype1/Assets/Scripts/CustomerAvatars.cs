@@ -51,7 +51,11 @@ public class CustomerAvatars : MonoBehaviour{
     /// <returns></returns>
     public static int RandomId()
     {
-        return Random.Range(0, instance.customerAvatars.Count);
+        if (instance)
+        {
+            return Random.Range(0, instance.customerAvatars.Count);
+        }
+        return 0;
     }
 
     /// <summary>

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -16,19 +15,17 @@ public class GameManager : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject aiPlayerPrefab;
     public PlayerManager[] players;
+    public int menuSceneId = 1;
 
     private int missionNumber;
     private WaitForSeconds startWait;
     private WaitForSeconds endWait;
-    private MissionTimer missionTimer;
 
 
     private void Start()
     {
         startWait = new WaitForSeconds(startDelay);
         endWait = new WaitForSeconds(endDelay);
-
-        missionTimer = GetComponent<MissionTimer>();
 
         SpawnAllPlayers();
         SetCameraTargets();
@@ -98,7 +95,7 @@ public class GameManager : MonoBehaviour
 
         missionNumber++;
         messageText.text = "MISSION " + missionNumber;
-        missionTimer.StartCountdown ();
+        MissionTimer.StartCountdown ();
         updateScore ();
 
         yield return startWait;
@@ -108,7 +105,7 @@ public class GameManager : MonoBehaviour
     private void updateScore()
     {
         // TODO: figure out active player num for when more than one player
-        timerText.text = "Time Remaining: "+FareTools.roundTwoDecimals(missionTimer.TimeRemaining ());
+        timerText.text = "Time Remaining: "+FareTools.roundTwoDecimals(MissionTimer.TimeRemaining ());
         playerText.text = "Player 1";
         scoresText.text = "";
         for (int i = 0; i < players.Length; i++)
@@ -158,7 +155,7 @@ public class GameManager : MonoBehaviour
 
     private bool MissionEndingCondition()
     {
-        return missionTimer.IsTimeElapsed ();
+        return MissionTimer.IsTimeElapsed ();
     }
 
     private string EndMessage()
@@ -175,14 +172,22 @@ public class GameManager : MonoBehaviour
                 winningScore = fpc.money;
             }
         }
-        message += "\nPlayer " + winningPlayer + " Wins!";
+        if (winningScore < 1.0f)
+        {
+            message += "\nNobody " + winningPlayer + " Wins...";
+        }
+        else
+        {
+            message += "\nPlayer " + winningPlayer + " Wins!";
+        }
+
         return message;
     }
 
 
     private void ResetAll()
     {
-        missionTimer.ResetTimer ();
+        MissionTimer.ResetTimer ();
         for (int i = 0; i < players.Length; i++)
         {
             players[i].Reset();
